@@ -19,5 +19,5 @@ DB_URL = (f"{os.environ.get('DB_TYPE')}://"
           f"{os.environ.get('DB_NAME')}")
 
 APPS_MODELS = [
-
+    "src.app.users.models",
 ]
