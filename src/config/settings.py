@@ -8,6 +8,9 @@ load_dotenv()
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
+# Token 60 минут * 24 часа * 7 дней = 7 дней
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7
+
 BASE_DIR = Path('__file__').resolve().parent.parent.parent
 
 # Database config
