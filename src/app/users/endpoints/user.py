@@ -1,11 +1,13 @@
 import json
+from typing import Annotated
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from starlette import status
 
 from src.app.auth.auth_handler import Auth
+from src.app.auth.permission import get_user
 from src.app.users.models import User
-from src.app.users.schemas import UserRegisterInSchema, UserPydantic, UserRegisterOutSchema
+from src.app.users.schemas import UserBaseSchema, UserRegisterInSchema, UserPydantic, UserRegisterOutSchema
 
 user_router = APIRouter()
 
@@ -48,3 +50,10 @@ async def register_user(user_data: UserRegisterInSchema):
         access_token=token
     )
     return response
+
+
+@user_router.get("/users/me/", response_model=UserBaseSchema)
+async def read_users_me(
+    current_user: Annotated[User, Depends(get_user)]
+):
+    return current_user

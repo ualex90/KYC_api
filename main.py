@@ -3,6 +3,7 @@ from tortoise.contrib.fastapi import register_tortoise
 
 from src.config import settings
 from src.app import routers
+from src.app.auth.endpoints import token
 
 # Регистрация объекта FastAPI
 app = FastAPI(
@@ -11,7 +12,10 @@ app = FastAPI(
     version="0.0.1",
 )
 
+# Роутеры со всех приложений
 app.include_router(routers.api_router, prefix='/api')
+# Отдельный роутер для авторизации в Swagger
+app.include_router(token.swagger_router, prefix='')
 
 # Подключение базы данных tortoise
 register_tortoise(
