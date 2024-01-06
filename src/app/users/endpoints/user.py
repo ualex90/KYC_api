@@ -1,6 +1,6 @@
 import json
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException
 from starlette import status
 
 from src.app.auth.auth_handler import Auth
