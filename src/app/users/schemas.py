@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import Field, BaseModel, EmailStr, SecretStr
 from tortoise.contrib.pydantic import pydantic_model_creator
 
@@ -42,6 +44,7 @@ class UserRegisterOutSchema(UserBaseSchema):
     """ Схема для ответа при регистрации """
     token_type: str = None
     access_token: str
+    surname: Optional[str] = None
 
     class Config:
         json_schema_extra = {
