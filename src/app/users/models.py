@@ -9,7 +9,6 @@ class User(models.Model):
     last_name = fields.CharField(max_length=100, description='Фамилия')
     first_name = fields.CharField(max_length=100, description='Имя')
     surname = fields.CharField(max_length=100, null=True, description='Отчество')
-    avatar = fields.CharField(max_length=300, null=True, description='Изображение')
     join_date = fields.DatetimeField(auto_now_add=True, description='Дата регистрации')
     is_active = fields.BooleanField(default=False, description='Признак активности')
     is_staff = fields.BooleanField(default=False, description='Признак персонала')
@@ -20,4 +19,4 @@ class User(models.Model):
         return self.email
 
     class PydanticMeta:
-        exclude = ('comments', 'password')
+        exclude = ['password']
