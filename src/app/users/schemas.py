@@ -44,7 +44,7 @@ class UserRegisterOutSchema(UserBaseSchema):
     """ Схема для ответа при регистрации """
     token_type: str = None
     access_token: str
-    surname: Optional[str] = None
+    surname: Optional[str] = None  # Так как поле может быть None, его нужно указать как опциональный тип
 
     class Config:
         json_schema_extra = {
