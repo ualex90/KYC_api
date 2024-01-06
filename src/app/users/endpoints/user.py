@@ -52,7 +52,7 @@ async def register_user(user_data: UserRegisterInSchema):
     return response
 
 
-@user_router.get("/users/me/", response_model=UserBaseSchema)
+@user_router.get("/users/me", response_model=UserBaseSchema)
 async def read_users_me(
     current_user: Annotated[User, Depends(get_user)]
 ):
