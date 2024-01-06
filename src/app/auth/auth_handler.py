@@ -1,7 +1,7 @@
 import time
 from typing import Annotated
 from fastapi.security import OAuth2PasswordBearer
-from passlib.hash import bcrypt
+from passlib.context import CryptContext
 import jwt
 from datetime import datetime, timedelta
 from fastapi import HTTPException, status, Depends
@@ -13,6 +13,8 @@ SECRET_KEY = settings.SECRET_KEY
 ALGORITHM = 'HS256'
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 class Auth:
     """ Менеджер авторизации """
@@ -22,19 +24,19 @@ class Auth:
         """
         Возвращает пароль, хешированный с помощью bcrypt.
 
-        :param password: Строка, которая будет хеширована bcrypt.
+        :param password: Строка, которая будет хеширована.
         """
-        return bcrypt.hash(password)
+        return pwd_context.hash(password)
 
     @classmethod
-    def verify_password(cls, password: str, hash_string: str) -> bool:
+    def verify_password(cls, plain_password: str, hashed_password: str) -> bool:
         """
         Проверяет нехешированный пароль путем сравнения с хешированным паролем.
 
-       :param password: Строка нехешированного пароля.
-       :param hash_string: Строка хешированного пароля.
+       :param plain_password: Нехешированный пароль.
+       :param hashed_password: Хешированный пароль.
        """
-        return bcrypt.verify(password, hash_string)
+        return pwd_context.verify(plain_password, hashed_password)
 
     @staticmethod
     def get_token(data: dict):
@@ -81,12 +83,12 @@ class Auth:
         )
         try:
             payload = cls.decode_token(token)
-            username: str = payload.get("email")
-            if username is None:
+            email: str = payload.get("email")
+            if email is None:
                 raise credentials_exception
         except:
             raise credentials_exception
-        user = await User.get_or_none(email=username)
+        user = await User.get_or_none(email=email)
         if user is None:
             raise credentials_exception
         return user
