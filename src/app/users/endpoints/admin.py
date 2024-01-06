@@ -1,4 +1,4 @@
-from typing import Annotated, List
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
 from fastapi_pagination import paginate, Page
