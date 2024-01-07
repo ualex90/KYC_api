@@ -1,3 +1,4 @@
+import shutil
 from datetime import datetime
 from pathlib import Path
 
@@ -24,3 +25,9 @@ def get_path_to_save(user: User, file_name: str) -> Path:
     new_name = Path(file_name).with_stem(date)
 
     return path / new_name
+
+
+async def save_file(current_user, file):
+    path = get_path_to_save(current_user, file.filename)
+    with open(path, 'wb') as buffer:
+        shutil.copyfileobj(file.file, buffer)
