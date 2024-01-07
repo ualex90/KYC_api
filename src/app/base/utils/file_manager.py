@@ -2,6 +2,10 @@ import shutil
 from datetime import datetime
 from pathlib import Path
 
+from fastapi import UploadFile, HTTPException
+from tortoise.exceptions import ValidationError
+
+from src.app.files.models import File, StatusFileEnum
 from src.app.users.models import User
 from src.config import settings
 
@@ -31,9 +35,28 @@ def get_path_to_save(file_name: str, user: User = None) -> Path:
     return path / new_name
 
 
-async def save_file(file, user=None):
+async def save_file(upload_file: UploadFile, user: User = None):
     """ Сохранение загруженных файлов """
     # Формируем путь к файлу
-    path = get_path_to_save(file.filename, user)
+    path = get_path_to_save(upload_file.filename, user)
+
+    # Сохранение файла на диске
     with open(path, 'wb') as buffer:
-        shutil.copyfileobj(file.file, buffer)
+        shutil.copyfileobj(upload_file.file, buffer)
+
+    # Сохранение информации о файле в базе данных
+    try:
+        file = await File(
+            file_name=upload_file.filename,
+            size=upload_file.size,
+            path=path.name,
+            status=StatusFileEnum.UNDER_REVIEW if user else StatusFileEnum.ACCEPTED,
+            owner=user
+        )
+        await file.save()
+    # В случае ошибки, удалить загруженный файл и ответить что пошло не так
+    except ValidationError as text:
+        path.unlink()
+        raise HTTPException(
+            status_code=422, detail=text.args
+        )

@@ -19,8 +19,8 @@ async def upload_file(
     Загрузка одного файла
     """
     # Получаем путь для сохранения и сохраняем
-    await save_file(file=file, user=current_user)
-    return {"file_name": file.filename}
+    await save_file(upload_file=file, user=current_user)
+    return {"file": file.filename}
 
 
 @upload_router.post('/multiple')
@@ -33,9 +33,9 @@ async def upload_multiple_file(
     """
     # Итерируем список файлов, получаем путь для сохранения и сохраняем
     for file in files:
-        await save_file(file=file, user=current_user)
+        await save_file(upload_file=file, user=current_user)
 
-    return {"file_name": [i.filename for i in files], "total": len(files)}
+    return {"files": [i.filename for i in files], "total": len(files)}
 
 
 @upload_router.post('/public')
@@ -49,8 +49,8 @@ async def upload_public_file(
     Доступно только для администратора
     """
     # Получаем путь для сохранения и сохраняем
-    await save_file(file=file)
-    return {"file_name": file.filename}
+    await save_file(upload_file=file)
+    return {"file": file.filename}
 
 
 @upload_router.post('/public/multiple')
@@ -65,6 +65,6 @@ async def upload_multiple_public_file(
     """
     # Итерируем список файлов, получаем путь для сохранения и сохраняем
     for file in files:
-        await save_file(file=file)
+        await save_file(upload_file=file)
 
-    return {"file_name": [i.filename for i in files], "total": len(files)}
+    return {"files": [i.filename for i in files], "total": len(files)}
