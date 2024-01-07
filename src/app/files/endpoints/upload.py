@@ -4,7 +4,7 @@ from typing import Annotated, List
 from fastapi import APIRouter, UploadFile, File, Depends
 
 from src.app.auth.permission import get_user
-from src.app.base.utils.documents import get_path_to_save, save_file
+from src.app.base.utils.file_manager import save_file
 from src.app.users.models import User
 
 upload_router = APIRouter()
@@ -22,7 +22,7 @@ async def upload_file(
     :param file: загружаемый файл
     """
     # Получаем путь для сохранения и сохраняем
-    await save_file(current_user, file)
+    await save_file(file=file, user=current_user)
     return {"file_name": file.filename}
 
 
@@ -39,6 +39,6 @@ async def upload_multiple_file(
     """
     # Итерируем список файлов, получаем путь для сохранения и сохраняем
     for file in files:
-        await save_file(current_user, file)
+        await save_file(file=file, user=current_user)
 
     return {"file_name": [i.filename for i in files], "total": len(files)}
