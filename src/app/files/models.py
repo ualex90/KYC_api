@@ -12,9 +12,10 @@ class StatusFileEnum(str, Enum):
 
 class File(models.Model):
     id = fields.IntField(pk=True, description='Идентификатор')
-    file_name = fields.CharField(max_length=50, description='Имя файла')
+    name = fields.CharField(max_length=50, description='Имя файла')
     size = fields.IntField(description='Размер файла')
-    path = fields.CharField(max_length=30, unique=True, description='Имя файла на диске')
+    content_type = fields.CharField(max_length=30, description='Тип файла')
+    filename = fields.CharField(max_length=30, unique=True, description='Имя файла на диске')
     status = fields.CharEnumField(
         enum_type=StatusFileEnum,
         default=StatusFileEnum.UNDER_REVIEW,
@@ -27,3 +28,4 @@ class File(models.Model):
         null=True,
         description='Владелец'
     )
+    upload_at = fields.DatetimeField(auto_now_add=True, description='Дата и время загрузки файла')

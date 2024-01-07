@@ -24,3 +24,8 @@ def get_superuser(current_user: User = Security(Auth.get_current_user)):
     elif not current_user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
+
+
+def is_owner_or_superuser(current_user: User, owner) -> bool:
+    """ Проверка является юзер владельцем или администратором """
+    return current_user.is_superuser or current_user.email == owner

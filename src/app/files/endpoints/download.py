@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -5,7 +6,7 @@ from fastapi.responses import FileResponse
 
 from src.app.auth.permission import get_user
 from src.app.users.models import User
-from src.config import settings
+from src.app.base.utils.file_manager import get_file
 
 download_router = APIRouter()
 
@@ -13,8 +14,8 @@ download_router = APIRouter()
 @download_router.get('')
 async def download_file(
         current_user: Annotated[User, Depends(get_user)],
-        file: str,
-        user: str = None,
+        filename: str,
+        owner: str = None,
 ):
     """
     Отправка файла пользователю
@@ -24,18 +25,17 @@ async def download_file(
     2. Пользователь является администратором
     3. Файл публичный и не привязан к пользователю
 
-    :param current_user: текущий пользователь
-    :param file: Имя файла для скачивания (имя физическое, в папке DOCUMENT_DIR)
-    :param user: Пользователь в формате user@example.com
+    :param current_user: текущий пользователь</br>
+    :param filename: Имя файла для скачивания (имя физическое, в хранилище DOCUMENT_DIR)</br>
+    :param owner: Владелец файла в формате user@example.com (опционально, для получения приватного файла)</br>
     """
-    # Формируем путь к файлу
-    file = settings.DOCUMENTS_DIR / user / file
-    # Проверяем наличие файла по сформированному адресу
-    if file.exists():
-        return FileResponse(
-            path=file,
-            filename=file.name,
-        )
+    # Ищем файл в базе данных проверяем права доступа и получаем о нем информацию
+    file = await get_file(filename=filename, owner=owner, current_user=current_user)
+    print(file.get("path"))
+    # Проверяем наличие файла по сформированному адресу и отправляем файл пользователю
+    if file.get("path").exists():
+        return FileResponse(**file)
+
     # Если файл не найден, возвращаем ошибку
     raise HTTPException(
         status_code=404, detail="File not found"
