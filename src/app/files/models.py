@@ -16,7 +16,7 @@ class File(models.Model):
     owner: fields.ForeignKeyRelation['User'] = fields.ForeignKeyField(
         'models.User',
         related_name='files',
-        on_delete=fields.CASCADE,
+        on_delete=fields.SET_NULL,
         null=True,
         description='Владелец'
     )

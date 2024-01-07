@@ -27,7 +27,7 @@ PUBLIC_FILES_DIR = FILES / 'public'
 if not PUBLIC_FILES_DIR.exists():
     PUBLIC_FILES_DIR.mkdir(parents=True)
 
-# Database config
+# Конфигурация базы данных
 DB_URL = (f"{os.environ.get('DB_TYPE')}://"
           f"{os.environ.get('DB_USER')}:"
           f"{os.environ.get('DB_PASS')}@"
@@ -35,6 +35,7 @@ DB_URL = (f"{os.environ.get('DB_TYPE')}://"
           f"{os.environ.get('DB_PORT')}/"
           f"{os.environ.get('DB_NAME')}")
 
+# Модели
 APPS_MODELS = [
     "src.app.users.models",
     "src.app.files.models",
