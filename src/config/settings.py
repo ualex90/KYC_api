@@ -11,7 +11,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # Token 60 минут * 24 часа * 7 дней = 7 дней
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7
 
-BASE_DIR = Path('__file__').resolve().parent.parent.parent
+BASE_DIR = Path(__file__).parent.parent.parent
+DOCUMENTS_DIR = BASE_DIR / 'documents'
 
 # Database config
 DB_URL = (f"{os.environ.get('DB_TYPE')}://"
