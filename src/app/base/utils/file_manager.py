@@ -15,10 +15,10 @@ def get_path_to_save(file_name: str, user: User = None) -> Path:
     :return: Объект Path содержащий путь к файлу
     """
     # Собираем путь к директории где будет храниться файл.
-    if User:
-        path = settings.DOCUMENTS_DIR / user.email
+    if user:
+        path = settings.DOCUMENTS_DIR / user.email  # Добавляем пользователя если файл приватный
     else:
-        path = settings.PUBLIC_FILES_DIR
+        path = settings.PUBLIC_FILES_DIR  # Если пользователь не передан, файл делаем публичным
 
     # Если директория не существует, то создадим ее
     if not path.exists():

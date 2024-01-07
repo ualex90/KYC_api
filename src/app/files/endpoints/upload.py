@@ -3,7 +3,7 @@ from typing import Annotated, List
 
 from fastapi import APIRouter, UploadFile, File, Depends
 
-from src.app.auth.permission import get_user
+from src.app.auth.permission import get_user, get_superuser
 from src.app.base.utils.file_manager import save_file
 from src.app.users.models import User
 
@@ -17,9 +17,6 @@ async def upload_file(
 ):
     """
     Загрузка одного файла
-
-    :param current_user: текущий пользователь
-    :param file: загружаемый файл
     """
     # Получаем путь для сохранения и сохраняем
     await save_file(file=file, user=current_user)
@@ -33,12 +30,41 @@ async def upload_multiple_file(
 ):
     """
     Загрузка нескольких файлов
-
-    :param current_user: текущий пользователь
-    :param files: загружаемые файлы
     """
     # Итерируем список файлов, получаем путь для сохранения и сохраняем
     for file in files:
         await save_file(file=file, user=current_user)
+
+    return {"file_name": [i.filename for i in files], "total": len(files)}
+
+
+@upload_router.post('/public')
+async def upload_public_file(
+        current_user: Annotated[User, Depends(get_superuser)],
+        file: UploadFile = File(...)
+):
+    """
+    Загрузка одного публичного файла
+
+    Доступно только для администратора
+    """
+    # Получаем путь для сохранения и сохраняем
+    await save_file(file=file)
+    return {"file_name": file.filename}
+
+
+@upload_router.post('/public/multiple')
+async def upload_multiple_public_file(
+        current_user: Annotated[User, Depends(get_superuser)],
+        files: List[UploadFile] = File(...)
+):
+    """
+    Загрузка нескольких публичных файлов
+
+    Доступно только для администратора
+    """
+    # Итерируем список файлов, получаем путь для сохранения и сохраняем
+    for file in files:
+        await save_file(file=file)
 
     return {"file_name": [i.filename for i in files], "total": len(files)}
