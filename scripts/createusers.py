@@ -44,8 +44,7 @@ users = [
 
 
 async def main():
-    """ Создание супер юзера
-    """
+    """ Создание тестовых пользователей """
     await Tortoise.init(
         db_url=settings.DB_URL,
         modules={"models": settings.APPS_MODELS},
