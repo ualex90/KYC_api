@@ -3,7 +3,6 @@ import os
 
 from dotenv import load_dotenv
 
-
 load_dotenv()
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -39,4 +38,16 @@ DB_URL = (f"{os.environ.get('DB_TYPE')}://"
 APPS_MODELS = [
     "src.app.users.models",
     "src.app.files.models",
+    "aerich.models",
 ]
+
+# Настройка tortoise_orm для инициализации aerich (менеджер миграций)
+TORTOISE_ORM = {
+    "connections": {"default": DB_URL},
+    "apps": {
+        "models": {
+            "models": APPS_MODELS,
+            "default_connection": "default",
+        }
+    },
+}

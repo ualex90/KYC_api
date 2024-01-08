@@ -23,7 +23,7 @@ register_tortoise(
     app,
     db_url=settings.DB_URL,
     modules={"models": settings.APPS_MODELS},
-    generate_schemas=True,
+    generate_schemas=False,
     add_exception_handlers=True,
 )
 

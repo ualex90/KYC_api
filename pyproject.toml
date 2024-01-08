@@ -26,6 +26,11 @@ aerich = "^0.7.2"
 pytest = "^7.4.4"
 pytest-cov = "^4.1.0"
 
+
+[tool.aerich]
+tortoise_orm = "src.config.settings.TORTOISE_ORM"
+location = "./migrations"
+src_folder = "./."
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
