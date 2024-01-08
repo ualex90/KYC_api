@@ -11,7 +11,7 @@ admin_router = APIRouter()
 
 
 @admin_router.get('/list', response_model=Page[UserBaseSchema])
-async def get_users(
+async def get_list_users(
         current_user: Annotated[User, Depends(get_superuser)],
 ):
     response = await User.all()
@@ -19,8 +19,8 @@ async def get_users(
     return paginate(response)
 
 
-@admin_router.get('/detail/{pk}', response_model=UserDetailSchema)
-async def get_users(
+@admin_router.get('/{pk}', response_model=UserDetailSchema)
+async def get_detail_user(
         pk: int, current_user: Annotated[User, Depends(get_superuser)],
 ):
     user = await User.get_or_none(id=pk)

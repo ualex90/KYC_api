@@ -18,8 +18,7 @@ class UserBaseSchema(BaseModel):
             "example": {
                 "id": "ID",
                 "email": "user@example.com",
-                "last_name": "Фамилия",
-                "first_name": "Имя",
+                "is_active": "Признак активности"
             }
         }
 
