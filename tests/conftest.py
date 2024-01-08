@@ -10,20 +10,23 @@ from main import create_app
 from src.config import settings
 
 
+# Адрес для тестовой базы данных
+TEST_DB_URL = settings.DB_URL + '_test'
+
+
 @pytest.fixture(scope="module", autouse=True)
 def client() -> Generator:
     app = create_app()
     # Создание тестовой базы
     initializer(
-        db_url=settings.TEST_DB_URL,
+        db_url=TEST_DB_URL,
         modules=settings.APPS_MODELS,
     )
     # Подключение к тестовой базе
     register_tortoise(
         app,
-        db_url=settings.TEST_DB_URL,
+        db_url=TEST_DB_URL,
         modules={'models': settings.APPS_MODELS},
-        generate_schemas=False,
         add_exception_handlers=True,
     )
     with TestClient(app) as c:
