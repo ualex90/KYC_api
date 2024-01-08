@@ -3,6 +3,7 @@
 <h3>Создание миграций</h3>
 https://tortoise.github.io/migration.html#usage
 <h4>1. Если миграции ранее не созданы</h4>
+
 - инициализируем aerich:
 
 ```bash
