@@ -15,12 +15,10 @@ def client() -> Generator:
     register_tortoise(
         app,
         db_url=settings.TEST_DB_URL,
-        modules={"models": ["app.models.tortoise"]},
+        modules={"models": settings.APPS_MODELS},
         generate_schemas=True,
         add_exception_handlers=True,
     )
     with TestClient(app) as test_client:
-        # testing
         yield test_client
 
-    # tear down
