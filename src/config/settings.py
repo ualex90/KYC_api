@@ -33,13 +33,13 @@ DB_PASS = os.environ.get('DB_PASS')
 DB_HOST = os.environ.get('DB_HOST')
 DB_PORT = os.environ.get('DB_PORT')
 DB_NAME = os.environ.get('DB_NAME')
-TEST_DB_NAME = os.environ.get('TEST_DB_NAME')
+DB_NAME_TEST = os.environ.get('DB_NAME_TEST')
 
 # URL для подключения к безе данных Tortoise ORM
 DB_URL = f"{DB_TYPE}://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 # URL для подключения к тестовой безе данных Tortoise ORM
-TEST_DB_URL = f"{DB_TYPE}://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{TEST_DB_NAME}"
+TEST_DB_URL = f"{DB_TYPE}://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME_TEST}"
 
 # Файлы моделей Tortoise ORM
 APPS_MODELS = [
