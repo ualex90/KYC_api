@@ -46,8 +46,7 @@ users = [
 async def main():
     """ Создание тестовых пользователей """
     await Tortoise.init(
-        db_url=settings.DB_URL,
-        modules={"models": settings.APPS_MODELS},
+        config=settings.TORTOISE_ORM
     )
     for item in users:
         super_user = await User.get_or_none(email=item['email'])
