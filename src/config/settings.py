@@ -26,18 +26,22 @@ PUBLIC_FILES_DIR = FILES / 'public'
 if not PUBLIC_FILES_DIR.exists():
     PUBLIC_FILES_DIR.mkdir(parents=True)
 
-# Конфигурация базы данных Tortoise ORM
+# URL для подключения к безе данных Tortoise ORM
 DB_URL = (f"{os.environ.get('DB_TYPE')}://"
           f"{os.environ.get('DB_USER')}:"
           f"{os.environ.get('DB_PASS')}@"
           f"{os.environ.get('DB_HOST')}:"
           f"{os.environ.get('DB_PORT')}/"
           f"{os.environ.get('DB_NAME')}")
+
+# Файлы моделей Tortoise ORM
 APPS_MODELS = [
     "src.app.users.models",
     "src.app.files.models",
     "aerich.models",
 ]
+
+# Конфигурация базы данных Tortoise ORM
 TORTOISE_ORM = {
     "connections": {"default": DB_URL},
     "apps": {
