@@ -17,7 +17,7 @@ TEST_DB_URL = settings.DB_URL + '_test'
 @pytest.fixture(scope="module", autouse=True)
 def client() -> Generator:
     app = create_app()
-    # Создание тестовой базы
+    # Создание тестовой базы и миграций
     initializer(
         db_url=TEST_DB_URL,
         modules=settings.APPS_MODELS,
