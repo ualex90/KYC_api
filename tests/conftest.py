@@ -5,7 +5,6 @@ from fastapi.testclient import TestClient
 from tortoise.contrib.fastapi import register_tortoise
 from tortoise.contrib.test import finalizer, initializer
 
-# from main import app
 from main import create_app
 from src.config import settings
 
