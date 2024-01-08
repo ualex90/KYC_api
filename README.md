@@ -31,7 +31,7 @@ aerich upgrade
 <h3>Создание тестовых пользователей</h3>
 
 ```bash
-python3 script/createusers.py
+python3 scripts/createusers.py
 ```
 
 <h3>Запуск сервера</h3>
