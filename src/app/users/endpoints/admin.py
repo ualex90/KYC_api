@@ -1,19 +1,31 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi_pagination import paginate, Page
 
 from src.app.auth.permission import get_superuser
 from src.app.users.models import User
-from src.app.users.schemas import UserListSchema
+from src.app.users.schemas import UserBaseSchema, UserDetailSchema
 
 admin_router = APIRouter()
 
 
-@admin_router.get('/user', response_model=Page[UserListSchema])
+@admin_router.get('/list', response_model=Page[UserBaseSchema])
 async def get_users(
         current_user: Annotated[User, Depends(get_superuser)],
 ):
     response = await User.all()
     # Возвращаем список с пагинацией
     return paginate(response)
+
+
+@admin_router.get('/detail/{pk}', response_model=UserDetailSchema)
+async def get_users(
+        pk: int, current_user: Annotated[User, Depends(get_superuser)],
+):
+    user = await User.get_or_none(id=pk)
+    if not user:
+        raise HTTPException(
+            status_code=404, detail="User not found"
+        )
+    return user

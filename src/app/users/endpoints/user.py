@@ -7,7 +7,7 @@ from starlette import status
 from src.app.auth.auth_handler import Auth
 from src.app.auth.permission import get_user
 from src.app.users.models import User
-from src.app.users.schemas import UserBaseSchema, UserRegisterInSchema, UserPydantic, UserRegisterOutSchema
+from src.app.users.schemas import UserMySchema, UserRegisterInSchema, UserPydantic, UserRegisterOutSchema
 
 user_router = APIRouter()
 
@@ -52,7 +52,7 @@ async def register_user(user_data: UserRegisterInSchema):
     return response
 
 
-@user_router.get("/users/me", response_model=UserBaseSchema)
+@user_router.get("/me", response_model=UserMySchema)
 async def read_users_me(current_user: Annotated[User, Depends(get_user)]):
     """ Получение данных о текущем пользователе"""
     return current_user
