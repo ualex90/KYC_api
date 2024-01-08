@@ -26,13 +26,20 @@ PUBLIC_FILES_DIR = FILES / 'public'
 if not PUBLIC_FILES_DIR.exists():
     PUBLIC_FILES_DIR.mkdir(parents=True)
 
+# Данные для подключения к базе данных из .env
+DB_TYPE = os.environ.get('DB_TYPE')
+DB_USER = os.environ.get('DB_USER')
+DB_PASS = os.environ.get('DB_PASS')
+DB_HOST = os.environ.get('DB_HOST')
+DB_PORT = os.environ.get('DB_PORT')
+DB_NAME = os.environ.get('DB_NAME')
+TEST_DB_NAME = os.environ.get('TEST_DB_NAME')
+
 # URL для подключения к безе данных Tortoise ORM
-DB_URL = (f"{os.environ.get('DB_TYPE')}://"
-          f"{os.environ.get('DB_USER')}:"
-          f"{os.environ.get('DB_PASS')}@"
-          f"{os.environ.get('DB_HOST')}:"
-          f"{os.environ.get('DB_PORT')}/"
-          f"{os.environ.get('DB_NAME')}")
+DB_URL = f"{DB_TYPE}://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+# URL для подключения к тестовой безе данных Tortoise ORM
+TEST_DB_URL = f"{DB_TYPE}://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{TEST_DB_NAME}"
 
 # Файлы моделей Tortoise ORM
 APPS_MODELS = [

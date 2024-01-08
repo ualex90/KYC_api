@@ -7,17 +7,37 @@ from src.config import settings
 from src.app import routers
 from src.app.auth.endpoints import token
 
-# Регистрация объекта FastAPI
-app = FastAPI(
-    title="KYC",
-    description="Author - u_alex90",
-    version="0.0.1",
-)
 
-# Роутеры со всех приложений
-app.include_router(routers.api_router, prefix='/api')
-# Отдельный роутер для авторизации в Swagger
-app.include_router(token.swagger_router, prefix='')
+def create_app() -> FastAPI:
+    """
+    Создание приложения
+
+    Создание приложения выделено в отдельную функцию
+    для возможности создания тестовой базы данных при тестировании
+    """
+    # Регистрация объекта FastAPI
+    application = FastAPI(
+        title="KYC",
+        description="Author - u_alex90",
+        version="0.0.1",
+    )
+
+    # Роутеры со всех приложений
+    application.include_router(routers.api_router, prefix='/api')
+    # Отдельный роутер для авторизации в Swagger
+    application.include_router(token.swagger_router, prefix='')
+
+    # Подключаем пагинацию
+    add_pagination(application)
+    # Отключаем назойливое сообщение, что для tortoise лучше использовать"fastapi_pagination.ext.tortoise"
+    # При этом разработчик не создал инструкцию к этому функционалу
+    disable_installed_extensions_check()
+
+    return application
+
+
+# Создание приложения
+app = create_app()
 
 # Подключение базы данных tortoise
 register_tortoise(
@@ -26,9 +46,3 @@ register_tortoise(
     generate_schemas=False,
     add_exception_handlers=True,
 )
-
-# Подключаем пагинацию
-add_pagination(app)
-# Отключаем назойливое сообщение, что для tortoise лучше использовать"fastapi_pagination.ext.tortoise"
-# При этом разработчик не создал инструкцию к этому функционалу
-disable_installed_extensions_check()
