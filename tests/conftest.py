@@ -2,7 +2,7 @@ from typing import Generator
 
 import pytest
 from fastapi.testclient import TestClient
-from tortoise.contrib.fastapi import register_tortoise
+from tortoise.contrib.test import finalizer, initializer
 
 from main import create_app
 from src.config import settings
@@ -10,17 +10,16 @@ from src.config import settings
 
 @pytest.fixture(scope="module")
 def client() -> Generator:
-    # set up
     app = create_app()
-    register_tortoise(
-        app,
+    # Создание тестовой базы данных
+    initializer(
         db_url=settings.TEST_DB_URL,
-        modules={"models": settings.APPS_MODELS},
-        generate_schemas=True,
-        add_exception_handlers=True,
+        modules=settings.APPS_MODELS
     )
     with TestClient(app) as test_client:
         yield test_client
+    # Удаление тестовой базы данных
+    finalizer()
 
 
 @pytest.fixture
