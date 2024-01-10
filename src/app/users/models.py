@@ -15,8 +15,5 @@ class User(models.Model):
     is_superuser = fields.BooleanField(default=False, description='Признак администратора')
     comments = fields.TextField(null=True, description='Информация о пользователе')
 
-    def __str__(self):
-        return self.email
-
     class PydanticMeta:
         exclude = ['password']
