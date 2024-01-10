@@ -51,3 +51,6 @@ def test_register_user_error400(client: TestClient):
     }
     response = client.post("/api/users/register", json=user_data)
     assert response.status_code == 400
+    assert response.json() == {
+        'detail': 'User already exists'
+    }
