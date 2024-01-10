@@ -17,26 +17,42 @@ async def register_user(user_data: UserRegisterInSchema):
     """
     Регистрация нового пользователя и получения JWT access_token.
 
+    Первый пользователь в базе данных, будет суперпользователем
     :param user_data: Данные пользователя согласно схемы UserRegisterInSchema.
     """
+    # Если в базе данных отсутствуют пользователи, то первым создаем суперпользователя
+    if not await User.first():
+        user = await User.create(
+            email=user_data.email,
+            last_name=user_data.last_name,
+            first_name=user_data.first_name,
+            surname=user_data.surname,
+            password=Auth.get_password_hash(
+                user_data.password.get_secret_value()
+            ),
+            is_staff=True,
+            is_superuser=True
+        )
+        await user.save()
+
     # Если пользователь с указанным email уже существует, вызываем исключение
-    if await User.get_or_none(email=user_data.email) is not None:
+    elif await User.get_or_none(email=user_data.email) is not None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User already exists"
         )
-
     # После валидации, сохраняем пользователя в базу данных
-    user = await User.create(
-        email=user_data.email,
-        last_name=user_data.last_name,
-        first_name=user_data.first_name,
-        surname=user_data.surname,
-        password=Auth.get_password_hash(
-            user_data.password.get_secret_value()
+    else:
+        user = await User.create(
+            email=user_data.email,
+            last_name=user_data.last_name,
+            first_name=user_data.first_name,
+            surname=user_data.surname,
+            password=Auth.get_password_hash(
+                user_data.password.get_secret_value()
+            )
         )
-    )
-    await user.save()
+        await user.save()
 
     # Получаем сериализуемый экземпляр модели pydantic, созданный на основе модели User
     user_json = await UserPydantic.from_tortoise_orm(user)

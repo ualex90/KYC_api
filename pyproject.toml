@@ -21,6 +21,7 @@ python-multipart = "^0.0.6"
 fastapi-pagination = "^0.12.14"
 aerich = "^0.7.2"
 httpx = "^0.26.0"
+faker = "^22.1.0"
 
 
 [tool.poetry.group.dev.dependencies]

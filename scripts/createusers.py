@@ -49,8 +49,10 @@ async def main():
         config=settings.TORTOISE_ORM
     )
     for item in users:
-        super_user = await User.get_or_none(email=item['email'])
-        if not super_user:
+        if not await User.first():
+            print("ЕСТЬ!!!")
+        this_user = await User.get_or_none(email=item['email'])
+        if not this_user:
             user = await User(
                 email=item['email'],
                 last_name=item['last_name'],
