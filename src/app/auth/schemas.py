@@ -23,7 +23,7 @@ class TokenSchema(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "token_type:": "Тип токена",
+                "token_type": "Тип токена",
                 "access_token": "Токен доступа"
             }
         }
