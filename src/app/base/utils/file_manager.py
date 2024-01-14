@@ -77,44 +77,34 @@ async def get_file_data(pk: int, current_user: User = None) -> dict:
     Получение данных файла для FileResponse
 
     :param pk: ID файла
-    # :param filename: имя файла находящегося в хранилище DOCUMENTS_DIR без расширения
-    # :param owner: Владелец для получения приватного файла, или None для публичного
     :param current_user: Текущий пользователь
     :return: Словарь пригодный для распаковки в аргументы FileResponse
     """
     # Определим переменные file и path чтоб не прописывать для каждого if else
     file = await File.get_or_none(id=pk)
+    if not file:
+        # Если файл в базе не найден, вызываем ошибку 404
+        raise HTTPException(
+            status_code=404, detail="File not found"
+        )
     file_owner = await file.owner
     path_no_suffix = None
 
-    if file.owner:
+    if file.is_public:
+        path_no_suffix = settings.PUBLIC_FILES_DIR / file.filename
+    else:
         # Проверяем, является ли пользователь владельцем или администратором
         if is_owner_or_superuser(current_user=current_user, owner=file_owner):
-            print("YIUOEFHIOL")
-
-    # if owner:
-    #     # Проверяем, является ли пользователь владельцем или администратором
-    #     if is_owner_or_superuser(current_user=current_user, owner=owner):
-    #         # Проверяем, существует ли пользователь и берем его ID
-    #         if owner_id := await User.get_or_none(email=owner):
-    #             file = await File.get_or_none(filename=filename, owner=owner_id)
-    #             path_no_suffix = settings.DOCUMENTS_DIR / owner / filename
-    # else:
-    #     file = await File.get_or_none(filename=filename)
-    #     path_no_suffix = settings.PUBLIC_FILES_DIR / filename
+            # Проверяем, существует ли пользователь и берем его ID
+            path_no_suffix = settings.DOCUMENTS_DIR / file_owner.email / file.filename
 
     # Возвращаем словарь пригодный для распаковки в аргументы FileResponse
-    # if file:
-    #     return {
-    #         'path': path_no_suffix.with_suffix(Path(file.name).suffix),  # Приклеиваем расширение как у file.name
-    #         'filename': file.name,
-    #         'media_type': file.content_type
-    #     }
-
-    # Если файл в базе не найден, вызываем ошибку 404
-    raise HTTPException(
-        status_code=404, detail="File not found"
-    )
+    if file:
+        return {
+            'path': path_no_suffix.with_suffix(Path(file.name).suffix),  # Приклеиваем расширение как у file.name
+            'filename': file.name,
+            'media_type': file.content_type
+        }
 
 
 async def get_file_list(
