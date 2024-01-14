@@ -11,19 +11,20 @@ from src.app.users.models import User
 from src.config import settings
 
 
-def get_path_to_save(filename: str, user: User = None) -> Path:
+def get_path_to_save(filename: str, user: User, is_public: bool) -> Path:
     """
     Формирование пути к файлу и создание необходимых директорий
 
     :param user: Объект текущего пользователя
     :param filename: Имя исходного файла
+    :param is_public: Признак публичности
     :return: Объект Path содержащий путь к файлу
     """
     # Собираем путь к директории где будет храниться файл.
-    if user:
-        path = settings.DOCUMENTS_DIR / user.email  # Добавляем пользователя если файл приватный
+    if is_public:
+        path = settings.PUBLIC_FILES_DIR  # Если имеется признак публичности, сохраняем файл в директорию public
     else:
-        path = settings.PUBLIC_FILES_DIR  # Если пользователь не передан, файл делаем публичным
+        path = settings.DOCUMENTS_DIR / user.email  # Если не публичный, то в папку пользователя
 
     # Если директория не существует, то создадим ее
     if not path.exists():
@@ -36,15 +37,16 @@ def get_path_to_save(filename: str, user: User = None) -> Path:
     return path / new_name
 
 
-async def save_file(upload_file: UploadFile, user: User = None) -> None:
+async def save_file(upload_file: UploadFile, user: User = None, is_public: bool = False) -> None:
     """
     Сохранение загруженных файлов
 
     :param upload_file: Файл, объект UploadFile
     :param user: Текущий пользователь для сохранения приватного файла, или None для публичного
+    :param is_public: Признак публичности
     """
     # Формируем путь к файлу
-    path = get_path_to_save(upload_file.filename, user)
+    path = get_path_to_save(upload_file.filename, user, is_public)
 
     # Сохранение файла на диске
     with open(path, 'wb') as buffer:
@@ -57,6 +59,7 @@ async def save_file(upload_file: UploadFile, user: User = None) -> None:
             size=upload_file.size,
             content_type=upload_file.content_type,
             filename=Path(path.name).stem,
+            is_public=is_public,
             status=StatusFileEnum.UNDER_REVIEW if user else StatusFileEnum.ACCEPTED,
             owner=user
         )
@@ -67,6 +70,51 @@ async def save_file(upload_file: UploadFile, user: User = None) -> None:
         raise HTTPException(
             status_code=422, detail=text.args
         )
+
+
+async def get_file_data(pk: int, current_user: User = None) -> dict:
+    """
+    Получение данных файла для FileResponse
+
+    :param pk: ID файла
+    # :param filename: имя файла находящегося в хранилище DOCUMENTS_DIR без расширения
+    # :param owner: Владелец для получения приватного файла, или None для публичного
+    :param current_user: Текущий пользователь
+    :return: Словарь пригодный для распаковки в аргументы FileResponse
+    """
+    # Определим переменные file и path чтоб не прописывать для каждого if else
+    file = await File.get_or_none(id=pk)
+    file_owner = await file.owner
+    path_no_suffix = None
+
+    if file.owner:
+        # Проверяем, является ли пользователь владельцем или администратором
+        if is_owner_or_superuser(current_user=current_user, owner=file_owner):
+            print("YIUOEFHIOL")
+
+    # if owner:
+    #     # Проверяем, является ли пользователь владельцем или администратором
+    #     if is_owner_or_superuser(current_user=current_user, owner=owner):
+    #         # Проверяем, существует ли пользователь и берем его ID
+    #         if owner_id := await User.get_or_none(email=owner):
+    #             file = await File.get_or_none(filename=filename, owner=owner_id)
+    #             path_no_suffix = settings.DOCUMENTS_DIR / owner / filename
+    # else:
+    #     file = await File.get_or_none(filename=filename)
+    #     path_no_suffix = settings.PUBLIC_FILES_DIR / filename
+
+    # Возвращаем словарь пригодный для распаковки в аргументы FileResponse
+    # if file:
+    #     return {
+    #         'path': path_no_suffix.with_suffix(Path(file.name).suffix),  # Приклеиваем расширение как у file.name
+    #         'filename': file.name,
+    #         'media_type': file.content_type
+    #     }
+
+    # Если файл в базе не найден, вызываем ошибку 404
+    raise HTTPException(
+        status_code=404, detail="File not found"
+    )
 
 
 async def get_file_list(
@@ -82,9 +130,9 @@ async def get_file_list(
     :param owner_email: Имя владельца
     """
     file_list = []
-    owner_obj = User()
+    owner_obj = None
 
-    # Если текущий пользователь не администратор
+    # Если текущий пользователь администратор
     if current_user.is_superuser:
         if owner_email:
             owner_obj = await User.get_or_none(email=owner_email)
@@ -115,45 +163,11 @@ async def get_file_list(
             "filename": file.filename,
             "name": file.name,
             "status": file.status,
-            "owner": file.owner_id,
+            "owner_id": file.owner_id,
         })
 
     return file_list
 
 
-async def get_file(filename: str, owner: User = None, current_user: User = None) -> dict:
-    """
-    Получение файла для FileResponse
-
-    :param filename: имя файла находящегося в хранилище DOCUMENTS_DIR без расширения
-    :param owner: Владелец для получения приватного файла, или None для публичного
-    :param current_user: Текущий пользователь
-    :return: Словарь пригодный для распаковки в аргументы FileResponse
-    """
-    # Определим переменные file и path чтоб не прописывать для каждого if else
-    file = None
-    path_no_suffix = None
-
-    if owner:
-        # Проверяем, является ли пользователь владельцем или администратором
-        if is_owner_or_superuser(current_user=current_user, owner=owner):
-            # Проверяем, существует ли пользователь и берем его ID
-            if owner_id := await User.get_or_none(email=owner):
-                file = await File.get_or_none(filename=filename, owner=owner_id)
-                path_no_suffix = settings.DOCUMENTS_DIR / owner / filename
-    else:
-        file = await File.get_or_none(filename=filename)
-        path_no_suffix = settings.PUBLIC_FILES_DIR / filename
-
-    # Возвращаем словарь пригодный для распаковки в аргументы FileResponse
-    if file:
-        return {
-            'path': path_no_suffix.with_suffix(Path(file.name).suffix),  # Приклеиваем расширение как у file.name
-            'filename': file.name,
-            'media_type': file.content_type
-        }
-
-    # Если файл в базе не найден, вызываем ошибку 404
-    raise HTTPException(
-        status_code=404, detail="File not found"
-    )
+async def get_file(filename: str) -> dict:
+    return {}

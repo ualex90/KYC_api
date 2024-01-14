@@ -16,6 +16,7 @@ class File(models.Model):
     size = fields.IntField(description='Размер файла')
     content_type = fields.CharField(max_length=30, description='Тип файла')
     filename = fields.CharField(max_length=30, unique=True, description='Имя файла на диске')
+    is_public = fields.BooleanField(default=False)
     status = fields.CharEnumField(
         enum_type=StatusFileEnum,
         default=StatusFileEnum.UNDER_REVIEW,

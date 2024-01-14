@@ -48,7 +48,7 @@ async def upload_public_file(
     Доступно только для администратора
     """
     # Получаем путь для сохранения и сохраняем
-    await save_file(upload_file=file)
+    await save_file(upload_file=file, user=current_user, is_public=True)
     return {"name": file.filename}
 
 
@@ -64,6 +64,6 @@ async def upload_multiple_public_file(
     """
     # Итерируем список файлов, получаем путь для сохранения и сохраняем
     for file in files:
-        await save_file(upload_file=file)
+        await save_file(upload_file=file, user=current_user, is_public=True)
 
     return {"files": [i.filename for i in files], "total": len(files)}

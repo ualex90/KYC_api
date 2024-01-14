@@ -26,6 +26,6 @@ def get_superuser(current_user: User = Security(Auth.get_current_user)):
     return current_user
 
 
-def is_owner_or_superuser(current_user: User, owner) -> bool:
+def is_owner_or_superuser(current_user: User, owner: User) -> bool:
     """ Проверка является юзер владельцем или администратором """
-    return current_user.is_superuser or current_user.email == owner
+    return current_user.is_superuser or current_user == owner
