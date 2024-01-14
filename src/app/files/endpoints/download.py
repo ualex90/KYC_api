@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 
 from src.app.auth.permission import get_user
-from src.app.files.models import File
 from src.app.users.models import User
 from src.app.base.utils.file_manager import get_file_data
 

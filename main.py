@@ -32,7 +32,6 @@ def create_app() -> FastAPI:
     # Отключаем назойливое сообщение, что для tortoise лучше использовать"fastapi_pagination.ext.tortoise"
     # При этом разработчик не создал инструкцию к этому функционалу
     disable_installed_extensions_check()
-
     return application
 
 

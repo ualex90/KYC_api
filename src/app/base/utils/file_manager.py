@@ -7,6 +7,7 @@ from tortoise.exceptions import ValidationError
 
 from src.app.auth.permission import is_owner_or_superuser
 from src.app.files.models import File, StatusFileEnum
+
 from src.app.users.models import User
 from src.config import settings
 
@@ -80,7 +81,7 @@ async def get_file_data(pk: int, current_user: User = None) -> dict:
     :param current_user: Текущий пользователь
     :return: Словарь пригодный для распаковки в аргументы FileResponse
     """
-    # Определим переменные file и path чтоб не прописывать для каждого if else
+
     file = await File.get_or_none(id=pk)
     if not file:
         # Если файл в базе не найден, вызываем ошибку 404
@@ -117,7 +118,7 @@ async def get_file_list(
 
     :param current_user: Текущий пользователь
     :param status: Статус файла
-    :param owner_email: Имя владельца
+    :param owner_email: Email владельца
     """
     file_list = []
     owner_obj = None
@@ -149,15 +150,38 @@ async def get_file_list(
         query = await File.all()
 
     for file in query:
+        file_owner = await file.owner
         file_list.append({
-            "filename": file.filename,
+            "id": file.id,
             "name": file.name,
             "status": file.status,
-            "owner_id": file.owner_id,
+            "owner": file_owner.email,
+            "is_public": file.is_public,
         })
-
     return file_list
 
 
-async def get_file(filename: str) -> dict:
-    return {}
+async def get_file(current_user: User, pk: int) -> dict:
+    file = await File.get_or_none(id=pk)
+    if file:
+        file_owner = await file.owner
+        if is_owner_or_superuser(current_user, file_owner) or file.is_public:
+            data = {
+                "id": file.id,
+                "name": file.name,
+                "status": file.status,
+                "owner": file_owner.email,
+                "is_public": file.is_public,
+                "filename": file.filename,
+                "size": file.size,
+                "content_type": file.content_type,
+                "upload_at": file.upload_at
+            }
+            return data
+        else:
+            raise HTTPException(
+                status_code=403, detail="You are not the owner or superuser"
+            )
+    raise HTTPException(
+        status_code=404, detail="File not found"
+    )
