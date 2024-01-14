@@ -29,7 +29,7 @@ async def download_file(
     # :param owner: Владелец файла в формате user@example.com (опционально, для получения приватного файла)</br>
     """
     # Ищем файл в базе данных проверяем права доступа и получаем о нем информацию
-    file_data = await get_file_data(pk=pk, current_user=current_user)
+    file_data = await get_file_data(current_user=current_user, pk=pk)
     # Проверяем наличие файла по сформированному адресу и отправляем файл пользователю
     if file_data.get("path").exists():
         return FileResponse(**file_data)

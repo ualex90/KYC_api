@@ -73,7 +73,7 @@ async def save_file(upload_file: UploadFile, user: User = None, is_public: bool 
         )
 
 
-async def get_file_data(pk: int, current_user: User = None) -> dict:
+async def get_file_data(current_user: User, pk: int) -> dict:
     """
     Получение данных файла для FileResponse
 
@@ -194,7 +194,7 @@ async def get_file(current_user: User, pk: int) -> dict:
     )
 
 
-async def change_status(pk: int, status: StatusFileEnum):
+async def change_status(pk: int, status: StatusFileEnum) -> dict:
     """
     Изменение статуса файла
 
@@ -209,4 +209,24 @@ async def change_status(pk: int, status: StatusFileEnum):
         return {"status": status}
     raise HTTPException(
         status_code=404, detail="File not found"
+    )
+
+
+async def remove_file(current_user: User, pk: int) -> dict:
+    """
+    Удаление файла
+
+    :param current_user:
+    :param pk:
+    :return:
+    """
+    file = await File.get_or_none(id=pk)
+    file_owner = await file.owner
+    if is_owner_or_superuser(current_user, file_owner):
+        file_data = await get_file_data(current_user, pk)
+        file_data['path'].unlink(missing_ok=True)
+        await file.delete()
+        return {'detail': f'{file_data["filename"]} deleted'}
+    raise HTTPException(
+        status_code=403, detail="You are not the owner or superuser"
     )

@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from fastapi_pagination import paginate, Page
 
 from src.app.auth.permission import get_user, get_superuser
-from src.app.base.utils.file_manager import get_file_list, get_file, change_status
+from src.app.base.utils.file_manager import get_file_list, get_file, change_status, remove_file
 from src.app.files.models import StatusFileEnum
 from src.app.files.schemas import FileBaseSchema
 from src.app.users.models import User
@@ -53,3 +53,16 @@ async def change_file_status(
     Доступно только администратору
     """
     return await change_status(pk, status)
+
+
+@file_router.delete('{pk}')
+async def delete_file(
+        current_user: Annotated[User, Depends(get_user)],
+        pk: int
+):
+    """
+    Удаление файла
+
+    Удалять может только владелец или администратор
+    """
+    return await remove_file(current_user, pk)
