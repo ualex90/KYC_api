@@ -109,7 +109,7 @@ async def get_file_data(pk: int, current_user: User = None) -> dict:
 
 
 async def get_file_list(
-        current_user: User = None,
+        current_user: User,
         status: StatusFileEnum = None,
         owner_email: str = None
 ) -> list[dict]:
@@ -162,6 +162,12 @@ async def get_file_list(
 
 
 async def get_file(current_user: User, pk: int) -> dict:
+    """
+    Получение информации о файле
+    :param current_user: Текущий пользователь
+    :param pk: ID файла
+    :return: Подробные данные о файле
+    """
     file = await File.get_or_none(id=pk)
     if file:
         file_owner = await file.owner
@@ -175,13 +181,32 @@ async def get_file(current_user: User, pk: int) -> dict:
                 "filename": file.filename,
                 "size": file.size,
                 "content_type": file.content_type,
-                "upload_at": file.upload_at
+                "upload_at": file.upload_at,
+                "change_at": file.change_at
             }
             return data
         else:
             raise HTTPException(
                 status_code=403, detail="You are not the owner or superuser"
             )
+    raise HTTPException(
+        status_code=404, detail="File not found"
+    )
+
+
+async def change_status(pk: int, status: StatusFileEnum):
+    """
+    Изменение статуса файла
+
+    :param pk:
+    :param status:
+    :return:
+    """
+    file = await File.get_or_none(id=pk)
+    if file:
+        file.status = status
+        await file.save()
+        return {"status": status}
     raise HTTPException(
         status_code=404, detail="File not found"
     )

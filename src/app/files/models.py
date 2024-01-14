@@ -30,3 +30,4 @@ class File(models.Model):
         description='Владелец'
     )
     upload_at = fields.DatetimeField(auto_now_add=True, description='Дата и время загрузки файла')
+    change_at = fields.DatetimeField(auto_now=True, description='Дата изменения статуса')

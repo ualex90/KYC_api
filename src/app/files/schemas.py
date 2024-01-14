@@ -31,6 +31,7 @@ class FileSchema(FileBaseSchema):
     size: float
     content_type: str
     upload_at: datetime
+    change_at: datetime
 
     class Config:
         json_schema_extra = {
@@ -44,5 +45,6 @@ class FileSchema(FileBaseSchema):
                 "size": "Размер файла байт",
                 "content_type": "Тип файла",
                 "upload_at": "Дата загрузки",
+                "change_at": "Дата изменения файла",
             }
         }
