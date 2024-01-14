@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -31,7 +30,6 @@ async def download_file(
     """
     # Ищем файл в базе данных проверяем права доступа и получаем о нем информацию
     file = await get_file(filename=filename, owner=owner, current_user=current_user)
-    print(file.get("path"))
     # Проверяем наличие файла по сформированному адресу и отправляем файл пользователю
     if file.get("path").exists():
         return FileResponse(**file)

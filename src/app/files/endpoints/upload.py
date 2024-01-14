@@ -1,4 +1,3 @@
-import shutil
 from typing import Annotated, List
 
 from fastapi import APIRouter, UploadFile, File, Depends
@@ -50,7 +49,7 @@ async def upload_public_file(
     """
     # Получаем путь для сохранения и сохраняем
     await save_file(upload_file=file)
-    return {"file": file.filename}
+    return {"name": file.filename}
 
 
 @upload_router.post('/public/multiple')

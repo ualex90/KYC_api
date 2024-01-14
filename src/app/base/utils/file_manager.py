@@ -69,6 +69,58 @@ async def save_file(upload_file: UploadFile, user: User = None) -> None:
         )
 
 
+async def get_file_list(
+        current_user: User = None,
+        status: StatusFileEnum = None,
+        owner_email: str = None
+) -> list[dict]:
+    """
+    Получение списка файлов по заданным фильтрам
+
+    :param current_user: Текущий пользователь
+    :param status: Статус файла
+    :param owner_email: Имя владельца
+    """
+    file_list = []
+    owner_obj = User()
+
+    # Если текущий пользователь не администратор
+    if current_user.is_superuser:
+        if owner_email:
+            owner_obj = await User.get_or_none(email=owner_email)
+            if not owner_obj:
+                raise HTTPException(
+                    status_code=404, detail="User not found"
+                )
+    else:
+        if owner_email:
+            if owner_email != current_user.email:
+                raise HTTPException(
+                    status_code=403, detail="You are not the owner or superuser"
+                )
+        # Если владелец не указан, присвоим переменной текущего пользователя
+        owner_obj = current_user
+
+    if status and owner_obj:
+        query = await File.all().filter(status=status).filter(owner=owner_obj.id)
+    elif status:
+        query = await File.all().filter(status=status)
+    elif owner_obj:
+        query = await File.all().filter(owner=owner_obj.id)
+    else:
+        query = await File.all()
+
+    for file in query:
+        file_list.append({
+            "filename": file.filename,
+            "name": file.name,
+            "status": file.status,
+            "owner": file.owner_id,
+        })
+
+    return file_list
+
+
 async def get_file(filename: str, owner: User = None, current_user: User = None) -> dict:
     """
     Получение файла для FileResponse
