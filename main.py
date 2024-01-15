@@ -17,9 +17,9 @@ def create_app() -> FastAPI:
     """
     # Регистрация объекта FastAPI
     application = FastAPI(
-        title="KYC",
-        description="Author - u_alex90",
-        version="0.0.1",
+        title=settings.PROJECT_NAME,
+        description=settings.PROJECT_DESCRIPTION,
+        version=settings.PROJECT_VERSION,
     )
 
     # Роутеры со всех приложений

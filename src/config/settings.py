@@ -5,6 +5,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Данные о проекте
+PROJECT_NAME = "KYC"
+PROJECT_DESCRIPTION = "Author - u_alex90"
+PROJECT_VERSION = "0.0.1"
+
+# Секретный ключ для генерации токенов доступа
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # Token 60 минут * 24 часа * 7 дней = 7 дней
@@ -25,6 +31,9 @@ if not DOCUMENTS_DIR.exists():
 PUBLIC_FILES_DIR = FILES / 'public'
 if not PUBLIC_FILES_DIR.exists():
     PUBLIC_FILES_DIR.mkdir(parents=True)
+
+# Директория шаблонов для email
+EMAIL_TEMPLATES_DIR = BASE_DIR / 'src/email_templates/build'
 
 # Данные для подключения к базе данных из .env
 DB_TYPE = os.environ.get('DB_TYPE')
@@ -55,3 +64,12 @@ TORTOISE_ORM = {
         }
     },
 }
+
+# Конфигурация исходящей почты
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT'))
+EMAIL_USER = os.environ.get('EMAIL_USER')
+EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+EMAIL_USE_TLS = True if os.environ.get('EMAIL_USE_TLS') == "True" else False
+# Проверка заполнения переменных окружения
+EMAILS_ENABLED = EMAIL_HOST and EMAIL_PORT and EMAIL_USER and EMAIL_PASSWORD and EMAIL_USE_TLS
