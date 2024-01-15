@@ -33,7 +33,7 @@ if not PUBLIC_FILES_DIR.exists():
     PUBLIC_FILES_DIR.mkdir(parents=True)
 
 # Директория шаблонов для email
-EMAIL_TEMPLATES_DIR = BASE_DIR / 'src/email_templates/build'
+EMAIL_TEMPLATES_DIR = BASE_DIR / 'src/email_templates'
 
 # Данные для подключения к базе данных из .env
 DB_TYPE = os.environ.get('DB_TYPE')

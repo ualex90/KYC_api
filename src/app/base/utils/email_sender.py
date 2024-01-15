@@ -30,7 +30,6 @@ def send_email(
         "password": settings.EMAIL_PASSWORD,
         "tls": settings.EMAIL_USE_TLS,
     }
-    print(smtp_options)
     response = message.send(to=email_to, render=environment, smtp=smtp_options)
     print(f"send email result: {response}")
 
