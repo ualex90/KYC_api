@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Данные о проекте
-PROJECT_NAME = "KYC"
+PROJECT_NAME = "KYC Service"
 PROJECT_DESCRIPTION = "Author - u_alex90"
 PROJECT_VERSION = "0.0.1"
 
@@ -32,8 +32,8 @@ PUBLIC_FILES_DIR = FILES / 'public'
 if not PUBLIC_FILES_DIR.exists():
     PUBLIC_FILES_DIR.mkdir(parents=True)
 
-# Директория шаблонов для email
-EMAIL_TEMPLATES_DIR = BASE_DIR / 'src/email_templates'
+# Директория шаблонов html
+TEMPLATES_DIR = BASE_DIR / 'src/templates'
 
 # Данные для подключения к базе данных из .env
 DB_TYPE = os.environ.get('DB_TYPE')

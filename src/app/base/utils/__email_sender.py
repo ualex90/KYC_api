@@ -15,7 +15,10 @@ def send_email(
     """
     Отправка email
 
-
+    :param email_to: Уьфшд
+    :param subject_template:
+    :param html_template:
+    :param environment:
     """
     assert settings.EMAILS_ENABLED, "no provided configuration for email variables"
     message = emails.Message(
@@ -42,7 +45,7 @@ def send_test_email(email_to: str):
     """
     project_name = settings.PROJECT_NAME
     subject = f"{project_name} - Test email"
-    with open(settings.EMAIL_TEMPLATES_DIR / "test_email.html") as f:
+    with open(settings.TEMPLATES_DIR / "email_test.html") as f:
         template_str = f.read()
     send_email(
         email_to=email_to,
@@ -53,6 +56,4 @@ def send_test_email(email_to: str):
 
 
 if __name__ == "__main__":
-    send_test_email(
-        email_to="u_alex90@mail.ru",
-    )
+    send_test_email("u_alex90@mail.ru")
