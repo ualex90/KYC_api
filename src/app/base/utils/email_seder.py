@@ -55,11 +55,13 @@ def send_email(
     try:
         server.login(settings.EMAIL_USER, settings.EMAIL_PASSWORD)
         template = render_template(template_name=template_name, **environment)
-        msg = MIMEText(template, "html")
+
         # From и To необходимо определить для предотвращения блокировки спам фильтром яндекс
+        msg = MIMEText(template, "html")
         msg["From"] = email_from
         msg["To"] = email_to
         msg["Subject"] = subject
+
         server.sendmail(email_from, email_to, msg.as_string())
         return f'The message "{subject}" to "{email_to}" was sent successfully!'
     except (
