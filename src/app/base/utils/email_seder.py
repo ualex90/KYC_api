@@ -48,13 +48,13 @@ def send_email(
     """
     assert settings.EMAILS_ENABLED, "no provided configuration for email variables"
     email_from = f'{settings.PROJECT_NAME} <{settings.EMAIL_USER}>'
+    template = render_template(template_name=template_name, **environment)
     server = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
     if settings.EMAIL_USE_TLS:
         server.starttls()
 
     try:
         server.login(settings.EMAIL_USER, settings.EMAIL_PASSWORD)
-        template = render_template(template_name=template_name, **environment)
 
         # From и To необходимо определить для предотвращения блокировки спам фильтром яндекс
         msg = MIMEText(template, "html")
