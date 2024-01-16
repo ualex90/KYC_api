@@ -15,7 +15,7 @@ def send_email(
     """
     Отправка email
 
-    :param email_to: Уьфшд
+    :param email_to:
     :param subject_template:
     :param html_template:
     :param environment:
@@ -34,7 +34,7 @@ def send_email(
         "tls": settings.EMAIL_USE_TLS,
     }
     response = message.send(to=email_to, render=environment, smtp=smtp_options)
-    print(f"send email result: {response}")
+    return f"send email result: {response}"
 
 
 def send_test_email(email_to: str):
