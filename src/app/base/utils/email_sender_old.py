@@ -3,28 +3,35 @@ from emails.template import JinjaTemplate
 
 from src.config import settings
 
-password_reset_jwt_subject = "preset"
-
 
 def send_email(
         email_to: str,
-        subject_template: str = "",
-        html_template: str = "",
+        subject: str,
+        template_name: str,
         environment: dict = None
 ):
     """
-    Отправка email
+    Отправка сообщения
 
-    :param email_to:
-    :param subject_template:
-    :param html_template:
-    :param environment:
+    Отправляет сообщение основанное на "template_name" с переменными "environment"
+    получателю "email_to" на тему "subject"
+
+    :param email_to: Email получателя
+    :param subject: Тема сообщения
+    :param template_name: Имя jinja шаблона (из папки шаблонов определенной по пути settings.TEMPLATES_DIR)
+    :param environment: Переменные для сборки шаблона
+    :return: Результат попытки отправки сообщения
     """
     assert settings.EMAILS_ENABLED, "no provided configuration for email variables"
+    try:
+        with open(settings.TEMPLATES_DIR / template_name) as f:
+            template = f.read()
+    except IOError:
+        f'Template file not found: {settings.TEMPLATES_DIR / template_name}'
     message = emails.Message(
-        subject=JinjaTemplate(subject_template),
-        html=JinjaTemplate(html_template),
-        mail_from=('KYC Service', settings.EMAIL_USER),
+        subject=subject,
+        html=JinjaTemplate(template),
+        mail_from=(settings.PROJECT_NAME, settings.EMAIL_USER),
     )
     smtp_options = {
         "host": settings.EMAIL_HOST,
@@ -40,18 +47,15 @@ def send_email(
 def send_test_email(email_to: str):
     """
     Отправка тестового письма
-
-
     """
-    project_name = settings.PROJECT_NAME
-    subject = f"{project_name} - Test email"
-    with open(settings.TEMPLATES_DIR / "email_test.html") as f:
-        template_str = f.read()
     send_email(
         email_to=email_to,
-        subject_template=subject,
-        html_template=template_str,
-        environment={"project_name": settings.PROJECT_NAME, "email": email_to},
+        subject="Тестовое сообщение",
+        template_name='email_test.html',
+        environment={
+            "project_name": settings.PROJECT_NAME,
+            "email": email_to,
+        }
     )
 
 

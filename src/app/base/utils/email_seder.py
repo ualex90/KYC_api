@@ -44,22 +44,23 @@ def send_email(
     :param subject: Тема сообщения
     :param template_name: Имя jinja шаблона (из папки шаблонов определенной по пути settings.TEMPLATES_DIR)
     :param environment: Переменные для сборки шаблона
-    :return:
+    :return: Результат попытки отправки сообщения
     """
     assert settings.EMAILS_ENABLED, "no provided configuration for email variables"
-    sender = f'{settings.PROJECT_NAME} <{settings.EMAIL_USER}>'
+    email_from = f'{settings.PROJECT_NAME} <{settings.EMAIL_USER}>'
     server = smtplib.SMTP(settings.EMAIL_HOST, settings.EMAIL_PORT)
     if settings.EMAIL_USE_TLS:
         server.starttls()
 
     try:
-        server.login("noreply-90@yandex.ru", settings.EMAIL_PASSWORD)
+        server.login(settings.EMAIL_USER, settings.EMAIL_PASSWORD)
         template = render_template(template_name=template_name, **environment)
         msg = MIMEText(template, "html")
-        msg["From"] = sender
+        # From и To необходимо определить для предотвращения блокировки спам фильтром яндекс
+        msg["From"] = email_from
         msg["To"] = email_to
         msg["Subject"] = subject
-        server.sendmail(sender, email_to, msg.as_string())
+        server.sendmail(email_from, email_to, msg.as_string())
         return f'The message "{subject}" to "{email_to}" was sent successfully!'
     except (
             smtplib.SMTPAuthenticationError,
