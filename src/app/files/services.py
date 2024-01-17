@@ -1,3 +1,5 @@
+from typing import Any
+
 from fastapi import UploadFile
 
 from src.app.base.utils.email_sender import get_admin_email_list
@@ -5,16 +7,19 @@ from src.app.worker import send_email_task
 from src.app.users.models import User
 
 
-async def send_message_add_files(current_user: User, files: list[UploadFile]):
+async def send_message_add_files(current_user: User, files: Any):
     """
-    Отправка сообщение администраторам сервиса о загрузке нового файла
+    Отправка сообщение администраторам сервиса о загрузке нового файла (файлов)
 
     :param current_user: Пользователь загрузивший файл
-    :param files: добавленные файлы
+    :param files: добавленный файл - UploadFile (файлы - List[UploadFile])
     """
+
+    file_list = files if isinstance(files, list) else [files]
+
     subject = f'Загружены документы на проверку'
     environment = {
-                "project_name": files[0].filename,
+                "project_name": file_list[0].filename,
                 "email": current_user.email,
             }
 
