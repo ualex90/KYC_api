@@ -73,3 +73,7 @@ EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 EMAIL_USE_TLS = True if os.environ.get('EMAIL_USE_TLS') == "True" else False
 # Проверка заполнения переменных окружения
 EMAILS_ENABLED = EMAIL_HOST and EMAIL_PORT and EMAIL_USER and EMAIL_PASSWORD and EMAIL_USE_TLS
+
+# Конфигурация Redis
+CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')

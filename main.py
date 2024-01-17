@@ -1,3 +1,5 @@
+import uvicorn
+from celery import Celery
 from fastapi import FastAPI
 from fastapi_pagination import add_pagination
 from fastapi_pagination.utils import disable_installed_extensions_check
@@ -45,3 +47,6 @@ register_tortoise(
     generate_schemas=False,
     add_exception_handlers=True,
 )
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

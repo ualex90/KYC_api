@@ -4,6 +4,7 @@ from fastapi import APIRouter, UploadFile, File, Depends
 
 from src.app.auth.permission import get_user, get_superuser
 from src.app.base.utils.file_manager import save_file
+from src.app.files.services import send_message_add_files
 from src.app.users.models import User
 
 upload_router = APIRouter()
@@ -19,6 +20,8 @@ async def upload_file(
     """
     # Получаем путь для сохранения и сохраняем
     await save_file(upload_file=file, user=current_user)
+    # Отправляем сообщения администраторам
+    await send_message_add_files(current_user, [file])
     return {"file": file.filename}
 
 
