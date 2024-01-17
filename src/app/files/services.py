@@ -1,7 +1,5 @@
 from typing import Any
 
-from fastapi import UploadFile
-
 from src.app.base.utils.email_sender import get_admin_email_list
 from src.app.worker import send_email_task
 from src.app.users.models import User
