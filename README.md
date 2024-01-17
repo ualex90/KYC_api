@@ -57,3 +57,9 @@ uvicorn main:app --reload
 ```bash
 uvicorn main:app --reload --port 8000 --host 0.0.0.0
 ```
+
+- запуск Celery
+
+```bash
+celery --app=src.app.worker.app worker --concurrency=1 --loglevel=DEBUG
+```
