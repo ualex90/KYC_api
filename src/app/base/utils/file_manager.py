@@ -221,6 +221,10 @@ async def remove_file(current_user: User, pk: int) -> dict:
     :return:
     """
     file = await File.get_or_none(id=pk)
+    if not file:
+        raise HTTPException(
+            status_code=404, detail="File not found"
+        )
     file_owner = await file.owner
     if is_owner_or_superuser(current_user, file_owner):
         file_data = await get_file_data(current_user, pk)
