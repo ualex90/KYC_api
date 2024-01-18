@@ -36,7 +36,8 @@ async def upload_multiple_file(
     # Итерируем список файлов, получаем путь для сохранения и сохраняем
     for file in files:
         await save_file(upload_file=file, user=current_user)
-
+    # Отправляем сообщения администраторам
+    await send_message_add_files(current_user, files)
     return {"files": [i.filename for i in files], "total": len(files)}
 
 
