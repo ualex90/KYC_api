@@ -7,6 +7,7 @@ from src.app.auth.permission import get_user, get_superuser
 from src.app.base.utils.file_manager import get_file_list, get_file, change_status, remove_file
 from src.app.files.models import StatusFileEnum
 from src.app.files.schemas import FileBaseSchema
+from src.app.files.services import send_message_files_status
 from src.app.users.models import User
 
 file_router = APIRouter()
@@ -52,7 +53,10 @@ async def change_file_status(
 
     Доступно только администратору
     """
-    return await change_status(pk, status)
+    file = await change_status(pk, status)
+    # Отправляем сообщения администраторам
+    await send_message_files_status(file)
+    return {"status": file.status}
 
 
 @file_router.delete('{pk}')

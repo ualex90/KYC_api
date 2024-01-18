@@ -4,12 +4,11 @@
       <mj-column>
         <mj-divider border-color="#555"></mj-divider>
         <mj-text font-size="20px" color="#555" font-family="helvetica">Статус документа</mj-text>
-        <mj-text font-size="16px" color="#555">Пользователь: {{user_email}}</mj-text>
+        <mj-text font-size="16px" color="#555">{{user_name}}! Здравствуйте!</mj-text>
+        <mj-text font-size="16px" color="#555">Нами рассмотрен Ваш документ:</mj-text>
         <mj-text font-size="16px" color="#555">
-          {% for file in files%}
-          {{loop.index}}. {{ file }} - {{status}}
-          <br/>
-          {% endfor %}
+          {{ file }} - {{status}}
+          <br />
         </mj-text>
         <mj-text font-size="16px" color="#555">Время проверки: {{time_update}}</mj-text>
       </mj-column>

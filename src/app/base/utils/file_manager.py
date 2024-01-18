@@ -194,19 +194,19 @@ async def get_file(current_user: User, pk: int) -> dict:
     )
 
 
-async def change_status(pk: int, status: StatusFileEnum) -> dict:
+async def change_status(pk: int, status: StatusFileEnum) -> File:
     """
     Изменение статуса файла
 
-    :param pk:
-    :param status:
-    :return:
+    :param pk: ID файла
+    :param status: Новый статус
+    :return: Файл с измененным статусом
     """
     file = await File.get_or_none(id=pk)
     if file:
         file.status = status
         await file.save()
-        return {"status": status}
+        return file
     raise HTTPException(
         status_code=404, detail="File not found"
     )
@@ -216,9 +216,9 @@ async def remove_file(current_user: User, pk: int) -> dict:
     """
     Удаление файла
 
-    :param current_user:
-    :param pk:
-    :return:
+    :param current_user: Текущий пользователь
+    :param pk: ID файла
+    :return: Результат
     """
     file = await File.get_or_none(id=pk)
     if not file:
