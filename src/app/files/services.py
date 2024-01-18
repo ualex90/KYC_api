@@ -34,7 +34,7 @@ async def send_message_files_add(current_user: User, files: Any):
     )
 
 
-async def send_message_files_status(file: File):
+async def send_message_file_status(file: File):
     """
     Отправка сообщения пользователю об изменении статуса проверки его файла
 
