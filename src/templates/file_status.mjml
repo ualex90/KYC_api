@@ -1,0 +1,18 @@
+<mjml>
+  <mj-body background-color="#fff">
+    <mj-section>
+      <mj-column>
+        <mj-divider border-color="#555"></mj-divider>
+        <mj-text font-size="20px" color="#555" font-family="helvetica">Статус документа</mj-text>
+        <mj-text font-size="16px" color="#555">Пользователь: {{user_email}}</mj-text>
+        <mj-text font-size="16px" color="#555">
+          {% for file in files%}
+          {{loop.index}}. {{ file }} - {{status}}
+          <br/>
+          {% endfor %}
+        </mj-text>
+        <mj-text font-size="16px" color="#555">Время проверки: {{time_update}}</mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
