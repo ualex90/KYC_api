@@ -1,8 +1,8 @@
 import uvicorn
-from celery import Celery
 from fastapi import FastAPI
 from fastapi_pagination import add_pagination
 from fastapi_pagination.utils import disable_installed_extensions_check
+from fastapi.middleware.cors import CORSMiddleware
 from tortoise.contrib.fastapi import register_tortoise
 
 from src.config import settings
@@ -39,6 +39,15 @@ def create_app() -> FastAPI:
 
 # Создание приложения
 app = create_app()
+
+# Включение CORSMiddleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.BACKEND_CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Подключение базы данных tortoise
 register_tortoise(

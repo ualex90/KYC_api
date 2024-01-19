@@ -77,3 +77,9 @@ EMAILS_ENABLED = EMAIL_HOST and EMAIL_PORT and EMAIL_USER and EMAIL_PASSWORD and
 # Конфигурация Redis
 CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+
+# Параметры CORSMiddleware
+BACKEND_CORS_ORIGINS = [
+    "http://localhost",
+    "http://localhost:8080",
+]
