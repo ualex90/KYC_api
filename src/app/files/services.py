@@ -1,5 +1,7 @@
 from datetime import datetime
-from typing import Any
+from typing import List
+
+from fastapi import UploadFile
 
 from src.app.base.utils.email_sender import get_admin_email_list
 from src.app.files.models import File, StatusFileEnum
@@ -7,7 +9,7 @@ from src.app.worker import send_email_task
 from src.app.users.models import User
 
 
-async def send_message_files_add(current_user: User, files: Any):
+async def send_message_files_add(current_user: User, files: UploadFile | List[UploadFile]):
     """
     Отправка сообщение администраторам сервиса о загрузке нового файла (файлов)
 
