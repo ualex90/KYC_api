@@ -7,7 +7,7 @@ https://tortoise.github.io/migration.html#usage
 - инициализируем aerich:
 
 ```bash
-aerich init -t src.config.settings.TORTOISE_ORM
+aerich init -t src.config.settings.TORTOISE_ORM --location ./db/migrations
 ```
 
 - создаем и применяем миграции:
