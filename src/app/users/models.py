@@ -2,9 +2,9 @@ from tortoise import models, fields
 
 
 class User(models.Model):
-    """ Модель пользователя """
+    """ Модель пользователя в формате django """
     id = fields.BigIntField(pk=True, description='Идентификатор')
-    username = fields.CharField(max_length=150, null=True, default=None, description='Имя пользователя')
+    username = fields.CharField(max_length=150, null=True, description='Имя пользователя')
     email = fields.CharField(max_length=255, unique=True, description='Адрес электронной почты')
     password = fields.CharField(max_length=128, description='Пароль')
     last_name = fields.CharField(max_length=30, description='Фамилия')
