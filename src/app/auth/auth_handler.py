@@ -22,20 +22,22 @@ class Auth:
     @classmethod
     def get_password_hash(cls, password: str) -> str:
         """
-        Возвращает пароль, хешированный с помощью bcrypt.
+        Возвращает пароль, хешированный в формате django BCryptPasswordHasher.
 
         :param password: Строка, которая будет хеширована.
         """
-        return pwd_context.hash(password)
+        django_hashed_password = 'bcrypt$' + pwd_context.hash(password)
+        return django_hashed_password
 
     @classmethod
-    def verify_password(cls, plain_password: str, hashed_password: str) -> bool:
+    def verify_password(cls, plain_password: str, django_hashed_password: str) -> bool:
         """
         Проверяет нехешированный пароль путем сравнения с хешированным паролем.
 
-       :param plain_password: Нехешированный пароль.
-       :param hashed_password: Хешированный пароль.
-       """
+        :param plain_password: Нехешированный пароль.
+        :param django_hashed_password: Хешированный пароль в формате django BCryptPasswordHasher.
+        """
+        hashed_password = django_hashed_password[7:]
         return pwd_context.verify(plain_password, hashed_password)
 
     @staticmethod

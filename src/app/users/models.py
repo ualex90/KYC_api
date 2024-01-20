@@ -3,10 +3,10 @@ from tortoise import models, fields
 
 class User(models.Model):
     """ Модель пользователя """
-    id = fields.IntField(pk=True, description='Идентификатор')
+    id = fields.BigIntField(pk=True, description='Идентификатор')
     username = fields.CharField(max_length=150, null=True, default=None, description='Имя пользователя')
     email = fields.CharField(max_length=255, unique=True, description='Адрес электронной почты')
-    password = fields.CharField(max_length=100, description='Пароль')
+    password = fields.CharField(max_length=128, description='Пароль')
     last_name = fields.CharField(max_length=30, description='Фамилия')
     first_name = fields.CharField(max_length=30, description='Имя')
     surname = fields.CharField(max_length=30, null=True, description='Отчество')
