@@ -12,9 +12,9 @@ class StatusFileEnum(str, Enum):
 
 class File(models.Model):
     id = fields.IntField(pk=True, description='Идентификатор')
-    name = fields.CharField(max_length=50, description='Имя файла')
+    name = fields.CharField(max_length=100, description='Имя файла')
     size = fields.IntField(description='Размер файла')
-    content_type = fields.CharField(max_length=30, description='Тип файла')
+    content_type = fields.CharField(max_length=50, description='Тип файла')
     filename = fields.CharField(max_length=30, unique=True, description='Имя файла на диске')
     is_public = fields.BooleanField(default=False, description='Признак публичности')
     status = fields.CharEnumField(
