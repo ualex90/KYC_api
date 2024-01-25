@@ -28,7 +28,7 @@ class UserMySchema(UserBaseSchema):
     last_name: str
     first_name: str
     surname: Optional[str]
-    join_date: datetime
+    date_joined: datetime
     is_staff: bool
     is_superuser: bool
 
@@ -41,7 +41,7 @@ class UserMySchema(UserBaseSchema):
                 "last_name": "Фамилия",
                 "first_name": "Имя",
                 "surname": "Отчество (при наличии)",
-                "join_date": "2024-01-01T00:00:00.000000Z",
+                "date_joined": "Дата и время регистрации",
                 "is_staff": "Признак персонала",
                 "is_superuser": "Признак администратора",
             }
@@ -50,6 +50,7 @@ class UserMySchema(UserBaseSchema):
 
 class UserDetailSchema(UserMySchema):
     """ Схема с полной информацией о пользователе """
+    last_login: Optional[datetime]
     comments: Optional[str]
 
     class Config:
@@ -61,9 +62,10 @@ class UserDetailSchema(UserMySchema):
                 "last_name": "Фамилия",
                 "first_name": "Имя",
                 "surname": "Отчество (при наличии)",
-                "join_date": "2024-01-01T00:00:00.000000Z",
+                "date_joined": "Дата и время регистрации",
                 "is_staff": "Признак персонала",
                 "is_superuser": "Признак администратора",
+                "last_login": "Дата и время последнего входа",
                 "comment": None
             }
         }
