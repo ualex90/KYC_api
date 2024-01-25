@@ -36,15 +36,14 @@ if not PUBLIC_FILES_DIR.exists():
 TEMPLATES_DIR = BASE_DIR / 'src/templates'
 
 # Данные для подключения к базе данных из .env
-DB_TYPE = os.environ.get('DB_TYPE')
-DB_USER = os.environ.get('DB_USER')
-DB_PASS = os.environ.get('DB_PASS')
-DB_HOST = os.environ.get('DB_HOST')
-DB_PORT = os.environ.get('DB_PORT')
-DB_NAME = os.environ.get('DB_NAME')
+POSTGRES_USER = os.environ.get('POSTGRES_USER')
+POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD')
+POSTGRES_HOST = os.environ.get('POSTGRES_HOST')
+POSTGRES_PORT = os.environ.get('POSTGRES_PORT')
+POSTGRES_DB = os.environ.get('POSTGRES_DB')
 
 # URL для подключения к безе данных Tortoise ORM
-DB_URL = f"{DB_TYPE}://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+DB_URL = f"postgres://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
 TEST_DB_URL = DB_URL + '_test'
 
 # Файлы моделей Tortoise ORM
@@ -75,8 +74,8 @@ EMAIL_USE_TLS = True if os.environ.get('EMAIL_USE_TLS') == "True" else False
 EMAILS_ENABLED = EMAIL_HOST and EMAIL_PORT and EMAIL_USER and EMAIL_PASSWORD and EMAIL_USE_TLS
 
 # Конфигурация Redis
-CELERY_BROKER_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+CELERY_BROKER_URL = os.environ.get('REDIS_URL')
+CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL')
 
 # Параметры CORSMiddleware
 BACKEND_CORS_ORIGINS = [
