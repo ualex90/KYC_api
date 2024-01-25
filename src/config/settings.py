@@ -66,7 +66,7 @@ TORTOISE_ORM = {
 
 # Конфигурация исходящей почты
 EMAIL_HOST = os.environ.get('EMAIL_HOST')
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT'))
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
 EMAIL_USER = os.environ.get('EMAIL_USER')
 EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 EMAIL_USE_TLS = True if os.environ.get('EMAIL_USE_TLS') == "True" else False
@@ -74,8 +74,8 @@ EMAIL_USE_TLS = True if os.environ.get('EMAIL_USE_TLS') == "True" else False
 EMAILS_ENABLED = EMAIL_HOST and EMAIL_PORT and EMAIL_USER and EMAIL_PASSWORD and EMAIL_USE_TLS
 
 # Конфигурация Redis
-CELERY_BROKER_URL = os.environ.get('REDIS_URL')
-CELERY_RESULT_BACKEND = os.environ.get('REDIS_URL')
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_BROKER_URL')
 
 # Параметры CORSMiddleware
 BACKEND_CORS_ORIGINS = [
