@@ -105,6 +105,22 @@ class UserRegisterInSchema(UserRegisterBaseSchema):
         }
 
 
+class UserUpdateInSchema(BaseModel):
+    """ Схема для изменения данных пользователя """
+    last_name: Optional[str] = Field(None, max_length=30)
+    first_name: Optional[str] = Field(None, max_length=30)
+    surname: Optional[str] = Field(None, max_length=30)
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "last_name": "Фамилия",
+                "first_name": "Имя",
+                "surname": "Отчество (при наличии)",
+            }
+        }
+
+
 class UserRegisterOutSchema(UserRegisterBaseSchema):
     """ Схема для ответа при регистрации """
     token_type: str = None

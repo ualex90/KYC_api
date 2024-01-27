@@ -5,7 +5,7 @@ from fastapi_pagination import paginate, Page
 
 from src.app.auth.permission import get_superuser
 from src.app.users.models import User
-from src.app.users.schemas import UserBaseSchema, UserDetailSchema
+from src.app.users.schemas import UserBaseSchema, UserDetailSchema, UserUpdateInSchema
 
 admin_router = APIRouter()
 
@@ -14,6 +14,7 @@ admin_router = APIRouter()
 async def get_list_users(
         current_user: Annotated[User, Depends(get_superuser)],
 ):
+    """ Получение списка пользователей. Доступно только администратору """
     response = await User.all()
     # Возвращаем список с пагинацией
     return paginate(response)
@@ -23,6 +24,7 @@ async def get_list_users(
 async def get_detail_user(
         pk: int, current_user: Annotated[User, Depends(get_superuser)],
 ):
+    """ Получение списка пользователей. Доступно только администратору """
     user = await User.get_or_none(id=pk)
     if not user:
         raise HTTPException(

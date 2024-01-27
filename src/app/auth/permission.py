@@ -14,11 +14,25 @@ def get_user(current_user: User = Security(Auth.get_current_user)):
 def get_superuser(current_user: User = Security(Auth.get_current_user)):
     """ Проверка суперюзер или нет """
 
-    # Проверка на признак суперпользователя
     if not current_user.is_superuser:
         raise HTTPException(
             status_code=403, detail="The user doesn't have enough privileges"
         )
+
+    # Проверка на признак активности
+    elif not current_user.is_active:
+        raise HTTPException(status_code=403, detail="Inactive user")
+    return current_user
+
+
+def get_this_user_or_superuser(pk: int, current_user: User = Security(Auth.get_current_user)):
+    """ Проверка этот пользователь или суперюзер """
+
+    if not current_user.is_superuser:
+        if current_user.id != pk:
+            raise HTTPException(
+                status_code=403, detail="The user doesn't have enough privileges"
+            )
 
     # Проверка на признак активности
     elif not current_user.is_active:

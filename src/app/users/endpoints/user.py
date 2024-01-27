@@ -5,9 +5,10 @@ from fastapi import APIRouter, HTTPException, Depends
 from starlette import status
 
 from src.app.auth.auth_handler import Auth
-from src.app.auth.permission import get_user
+from src.app.auth.permission import get_user, get_this_user_or_superuser
 from src.app.users.models import User
-from src.app.users.schemas import UserMySchema, UserRegisterInSchema, UserPydantic, UserRegisterOutSchema
+from src.app.users.schemas import UserMySchema, UserRegisterInSchema, UserPydantic, UserRegisterOutSchema, \
+    UserUpdateInSchema
 
 user_router = APIRouter()
 
@@ -72,3 +73,21 @@ async def register_user(user_data: UserRegisterInSchema):
 async def read_users_me(current_user: Annotated[User, Depends(get_user)]):
     """ Получение данных о текущем пользователе"""
     return current_user
+
+
+@user_router.patch('/{pk}', response_model=UserMySchema)
+async def update_user(
+        pk: int,
+        user_data: UserUpdateInSchema,
+        current_user: Annotated[User, Depends(get_this_user_or_superuser)],
+):
+    """ Редактирование профиля пользователя """
+    user = await User.get_or_none(id=pk)
+    if not user:
+        raise HTTPException(
+            status_code=404, detail="User not found"
+        )
+    new_data = {k: v for k, v in user_data.model_dump().items() if v}
+    await user.update_from_dict(new_data)
+    await user.save()
+    return user
