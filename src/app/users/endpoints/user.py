@@ -9,7 +9,7 @@ from src.app.auth.permission import get_user, get_this_user_or_superuser
 from src.app.files.models import File
 from src.app.users.models import User
 from src.app.users.schemas import UserMySchema, UserRegisterInSchema, UserPydantic, UserRegisterOutSchema, \
-    UserUpdateInSchema
+    UserUpdateBaseInSchema
 
 user_router = APIRouter()
 
@@ -76,41 +76,30 @@ async def read_users_me(current_user: Annotated[User, Depends(get_user)]):
     return current_user
 
 
-@user_router.patch('/{pk}', response_model=UserMySchema)
-async def update_user(
-        pk: int,
-        user_data: UserUpdateInSchema,
-        current_user: Annotated[User, Depends(get_this_user_or_superuser)],
+@user_router.patch('/update', response_model=UserMySchema)
+async def update_profile_user(
+        user_data: UserUpdateBaseInSchema,
+        current_user: Annotated[User, Depends(get_user)],
 ):
     """ Редактирование профиля пользователя """
-    user = await User.get_or_none(id=pk)
-    if not user:
-        raise HTTPException(
-            status_code=404, detail="User not found"
-        )
-    new_data = {k: v for k, v in user_data.model_dump().items() if v}
-    await user.update_from_dict(new_data)
-    await user.save()
-    return user
+    new_data = {k: v for k, v in user_data.model_dump().items() if v is not None}
+    await current_user.update_from_dict(new_data)
+    await current_user.save()
+    return current_user
 
 
-@user_router.delete('/{pk}')
+@user_router.delete('/delete')
 async def delete_user(
         pk: int,
         current_user: Annotated[User, Depends(get_this_user_or_superuser)],
 ):
     """ Удаление пользователя """
-    user = await User.get_or_none(id=pk)
-    if not user:
-        raise HTTPException(
-            status_code=404, detail="User not found"
-        )
     # Ввиду отсутствия прямой поддержки ForeingKey у Tortoise ORM
     # и невозможности применения related_name по причине циркулярного импорта,
     # самостоятельно устанавливаем в None поле owner во всх записях связанных файлов
-    async for file in File.filter(owner=user.id):
+    async for file in File.filter(owner=current_user.id):
         file.owner = None
         await file.save()
-    await user.delete()
+    await current_user.delete()
     return {'detail': 'deleted'}
 

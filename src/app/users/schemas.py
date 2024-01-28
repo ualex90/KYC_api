@@ -105,22 +105,6 @@ class UserRegisterInSchema(UserRegisterBaseSchema):
         }
 
 
-class UserUpdateInSchema(BaseModel):
-    """ Схема для изменения данных пользователя """
-    last_name: Optional[str] = Field(None, max_length=30)
-    first_name: Optional[str] = Field(None, max_length=30)
-    surname: Optional[str] = Field(None, max_length=30)
-
-    class Config:
-        json_schema_extra = {
-            "example": {
-                "last_name": "Фамилия",
-                "first_name": "Имя",
-                "surname": "Отчество (при наличии)",
-            }
-        }
-
-
 class UserRegisterOutSchema(UserRegisterBaseSchema):
     """ Схема для ответа при регистрации """
     token_type: str = None
@@ -139,7 +123,56 @@ class UserRegisterOutSchema(UserRegisterBaseSchema):
         }
 
 
+class UserUpdateBaseInSchema(BaseModel):
+    """ Схема для изменения профиля пользователя """
+    last_name: Optional[str] = Field(None, max_length=30)
+    first_name: Optional[str] = Field(None, max_length=30)
+    surname: Optional[str] = Field(None, max_length=30)
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "last_name": "Фамилия",
+                "first_name": "Имя",
+                "surname": "Отчество (при наличии)",
+            }
+        }
+
+
+class UserUpdateInSchema(UserUpdateBaseInSchema):
+    """ Схема для изменения данных пользователя """
+    is_active: Optional[bool] = Field(None)
+    is_staff: Optional[bool] = Field(None)
+    is_superuser: Optional[bool] = Field(None)
+    comments: Optional[str] = Field(None)
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "last_name": "Фамилия",
+                "first_name": "Имя",
+                "surname": "Отчество (при наличии)",
+                "is_active": "Признак активности",
+                "is_staff": "Признак персонала",
+                "is_superuser": "Признак администратора",
+                "comments": "Комментарии",
+            }
+        }
+
+
 UserPydantic = pydantic_model_creator(
     User,
     name='User',
 )
+
+
+class UserActiveSchema(BaseModel):
+    """ Схема для активации пользователя """
+    is_active: bool
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "is_active": "Статус активности",
+            }
+        }
