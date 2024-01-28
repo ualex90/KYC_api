@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from starlette import status
 
 from src.app.auth.auth_handler import Auth
-from src.app.auth.permission import get_user, get_this_user_or_superuser
+from src.app.auth.permission import get_user
 from src.app.files.models import File
 from src.app.users.models import User
 from src.app.users.schemas import UserMySchema, UserRegisterInSchema, UserPydantic, UserRegisterOutSchema, \
@@ -90,8 +90,7 @@ async def update_profile_user(
 
 @user_router.delete('/delete')
 async def delete_user(
-        pk: int,
-        current_user: Annotated[User, Depends(get_this_user_or_superuser)],
+        current_user: Annotated[User, Depends(get_user)],
 ):
     """ Удаление пользователя """
     # Ввиду отсутствия прямой поддержки ForeingKey у Tortoise ORM

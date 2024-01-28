@@ -41,7 +41,8 @@ def test_get_detail_user(client: TestClient, admin_token_headers):
         'is_active': True,
         'is_staff': True,
         'is_superuser': True,
-        'join_date': response.json()['join_date'],
+        'date_joined': response.json()['date_joined'],
+        'last_login': None,
         'comments': None,
     }
 
