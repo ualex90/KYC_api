@@ -53,7 +53,7 @@ async def upload_public_file(
     """
     # Получаем путь для сохранения и сохраняем
     await save_file(upload_file=file, user=current_user, is_public=True)
-    return {"name": file.filename}
+    return {"file": file.filename}
 
 
 @upload_router.post('/public/multiple')
