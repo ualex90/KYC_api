@@ -65,7 +65,7 @@ async def send_message_file_status(file: File):
                 }
 
         send_email_task.delay(
-            email_to=user.email,
+            email_to=[user.email, ],
             subject=subject,
             template_name='file_status.html',
             environment=environment
