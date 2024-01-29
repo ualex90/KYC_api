@@ -68,6 +68,16 @@ def user2_token_headers(client: TestClient) -> dict[str, str]:
     return get_token_headers(client, user_data)
 
 
+@pytest.fixture(scope="module")
+def user3_token_headers(client: TestClient) -> dict[str, str]:
+    """ Неактивный пользователь """
+    user_data = {
+            'email': 'sidorov@sky.pro',
+            'password': '123qwe',
+        }
+    return get_token_headers(client, user_data)
+
+
 @pytest.fixture()
 def random_user_data() -> dict:
     """ Случайные пользовательские данные """

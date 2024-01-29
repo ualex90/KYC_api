@@ -30,6 +30,16 @@ test_users = [
         'is_active': True,
         'is_staff': False,
         'is_superuser': False,
+    },
+    {
+        'email': 'sidorov@sky.pro',
+        'last_name': 'Сидоров',
+        'first_name': 'Сидр',
+        'surname': 'Сидорович',
+        'password': '123qwe',
+        'is_active': True,
+        'is_staff': False,
+        'is_superuser': False,
     }
 ]
 

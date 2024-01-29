@@ -21,8 +21,13 @@ def test_get_list_users(client: TestClient, admin_token_headers):
                 "email": "petrov@sky.pro",
                 "is_active": True
             },
+            {
+                "id": 4,
+                "email": "sidorov@sky.pro",
+                "is_active": True
+            },
         ],
-        "total": 3,
+        "total": 4,
         "page": 1,
         "size": 50,
         "pages": 1

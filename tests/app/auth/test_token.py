@@ -10,7 +10,7 @@ def test_get_token(client: TestClient):
     assert resource.status_code == 200
     assert resource.json() == {
         "access_token": resource.json()["access_token"],
-        "token_type": "bearer"
+        "token_type": "Bearer"
     }
 
 

@@ -51,7 +51,7 @@ async def swagger_login(
     if user and Auth.verify_password(form_data.password, user.password):
         user_json = await UserPydantic.from_tortoise_orm(user)
         return TokenSchema(
-            token_type="bearer",
+            token_type="Bearer",
             access_token=Auth.get_token(data=json.loads(user_json.json()))
         )
 
