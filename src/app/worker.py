@@ -3,7 +3,7 @@ import os
 from celery import Celery
 from dotenv import load_dotenv
 
-from src.app.base.utils.email_sender_old import send_email
+from src.app.base.utils.email_sender import send_email
 from src.config import settings
 
 load_dotenv()

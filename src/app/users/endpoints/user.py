@@ -6,8 +6,10 @@ from starlette import status
 
 from src.app.auth.auth_handler import Auth
 from src.app.auth.permission import get_user
+from src.app.files.models import File
 from src.app.users.models import User
-from src.app.users.schemas import UserMySchema, UserRegisterInSchema, UserPydantic, UserRegisterOutSchema
+from src.app.users.schemas import UserMySchema, UserRegisterInSchema, UserPydantic, UserRegisterOutSchema, \
+    UserUpdateBaseInSchema
 
 user_router = APIRouter()
 
@@ -72,3 +74,31 @@ async def register_user(user_data: UserRegisterInSchema):
 async def read_users_me(current_user: Annotated[User, Depends(get_user)]):
     """ Получение данных о текущем пользователе"""
     return current_user
+
+
+@user_router.patch('/update', response_model=UserMySchema)
+async def update_profile_user(
+        user_data: UserUpdateBaseInSchema,
+        current_user: Annotated[User, Depends(get_user)],
+):
+    """ Редактирование профиля пользователя """
+    new_data = {k: v for k, v in user_data.model_dump().items() if v is not None}
+    await current_user.update_from_dict(new_data)
+    await current_user.save()
+    return current_user
+
+
+@user_router.delete('/delete')
+async def delete_user(
+        current_user: Annotated[User, Depends(get_user)],
+):
+    """ Удаление пользователя """
+    # Ввиду отсутствия прямой поддержки ForeingKey у Tortoise ORM
+    # и невозможности применения related_name по причине циркулярного импорта,
+    # самостоятельно устанавливаем в None поле owner во всх записях связанных файлов
+    async for file in File.filter(owner=current_user.id):
+        file.owner = None
+        await file.save()
+    await current_user.delete()
+    return {'detail': 'deleted'}
+

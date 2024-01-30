@@ -13,7 +13,7 @@ def test_read_users_me_for_admin(client: TestClient, admin_token_headers: dict):
         'is_active': True,
         'is_staff': True,
         'is_superuser': True,
-        'join_date': response.json()['join_date'],
+        'date_joined': response.json()['date_joined'],
     }
 
 
@@ -29,7 +29,7 @@ def test_read_users_me_for_user(client: TestClient, user1_token_headers: dict):
         'is_active': True,
         'is_staff': False,
         'is_superuser': False,
-        'join_date': response.json()['join_date'],
+        'date_joined': response.json()['date_joined'],
     }
 
 
@@ -54,3 +54,44 @@ def test_register_user_error400(client: TestClient):
     assert response.json() == {
         'detail': 'User already exists'
     }
+
+
+def test_read_users_me(client: TestClient, user1_token_headers):
+    response = client.get("/api/users/me", headers=user1_token_headers)
+    assert response.status_code == 200
+    assert response.json() == {
+        'date_joined': response.json()['date_joined'],
+        'email': 'ivanov@sky.pro',
+        'first_name': 'Иван',
+        'id': response.json()['id'],
+        'is_active': True,
+        'is_staff': False,
+        'is_superuser': False,
+        'last_name': 'Иванов',
+        'surname': 'Иванович'
+    }
+
+
+def test_update_profile_user(client: TestClient, user1_token_headers):
+    update_data = {
+        'first_name': 'Ванька',
+    }
+    response = client.patch("/api/users/update", headers=user1_token_headers, json=update_data)
+    assert response.status_code == 200
+    assert response.json() == {
+        'date_joined': response.json()['date_joined'],
+        'email': 'ivanov@sky.pro',
+        'first_name': 'Ванька',
+        'id': response.json()['id'],
+        'is_active': True,
+        'is_staff': False,
+        'is_superuser': False,
+        'last_name': 'Иванов',
+        'surname': 'Иванович'
+    }
+
+
+def test_delete_user(client: TestClient, user1_token_headers):
+    response = client.delete("/api/users/delete", headers=user1_token_headers)
+    assert response.status_code == 200
+    assert response.json() == {'detail': 'deleted'}

@@ -45,27 +45,28 @@ async def send_message_file_status(file: File):
     time_now = f"{datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')} UTC"
 
     user = await file.owner
-    user_name = f'{user.first_name} {user.surname}'
+    if user:
+        user_name = f'{user.first_name} {user.surname}'
 
-    match file.status:
-        case StatusFileEnum.ACCEPTED:
-            file_status = "ПРИНЯТ"
-        case StatusFileEnum.REJECTED:
-            file_status = "ОТКЛОНЕН"
-        case _:
-            file_status = "На рассмотрении"
+        match file.status:
+            case StatusFileEnum.ACCEPTED:
+                file_status = "ПРИНЯТ"
+            case StatusFileEnum.REJECTED:
+                file_status = "ОТКЛОНЕН"
+            case _:
+                file_status = "На рассмотрении"
 
-    subject = f'Результат проверки документа'
-    environment = {
-                'user_name': user_name,
-                'file': file.name,
-                'status': file_status,
-                'time_update': time_now
-            }
+        subject = f'Результат проверки документа'
+        environment = {
+                    'user_name': user_name,
+                    'file': file.name,
+                    'status': file_status,
+                    'time_update': time_now
+                }
 
-    send_email_task.delay(
-        email_to=user.email,
-        subject=subject,
-        template_name='file_status.html',
-        environment=environment
-    )
+        send_email_task.delay(
+            email_to=[user.email, ],
+            subject=subject,
+            template_name='file_status.html',
+            environment=environment
+        )

@@ -28,7 +28,7 @@ class UserMySchema(UserBaseSchema):
     last_name: str
     first_name: str
     surname: Optional[str]
-    join_date: datetime
+    date_joined: datetime
     is_staff: bool
     is_superuser: bool
 
@@ -41,7 +41,7 @@ class UserMySchema(UserBaseSchema):
                 "last_name": "Фамилия",
                 "first_name": "Имя",
                 "surname": "Отчество (при наличии)",
-                "join_date": "2024-01-01T00:00:00.000000Z",
+                "date_joined": "Дата и время регистрации",
                 "is_staff": "Признак персонала",
                 "is_superuser": "Признак администратора",
             }
@@ -50,6 +50,7 @@ class UserMySchema(UserBaseSchema):
 
 class UserDetailSchema(UserMySchema):
     """ Схема с полной информацией о пользователе """
+    last_login: Optional[datetime]
     comments: Optional[str]
 
     class Config:
@@ -61,9 +62,10 @@ class UserDetailSchema(UserMySchema):
                 "last_name": "Фамилия",
                 "first_name": "Имя",
                 "surname": "Отчество (при наличии)",
-                "join_date": "2024-01-01T00:00:00.000000Z",
+                "date_joined": "Дата и время регистрации",
                 "is_staff": "Признак персонала",
                 "is_superuser": "Признак администратора",
+                "last_login": "Дата и время последнего входа",
                 "comment": None
             }
         }
@@ -121,7 +123,56 @@ class UserRegisterOutSchema(UserRegisterBaseSchema):
         }
 
 
+class UserUpdateBaseInSchema(BaseModel):
+    """ Схема для изменения профиля пользователя """
+    last_name: Optional[str] = Field(None, max_length=30)
+    first_name: Optional[str] = Field(None, max_length=30)
+    surname: Optional[str] = Field(None, max_length=30)
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "last_name": "Фамилия",
+                "first_name": "Имя",
+                "surname": "Отчество (при наличии)",
+            }
+        }
+
+
+class UserUpdateInSchema(UserUpdateBaseInSchema):
+    """ Схема для изменения данных пользователя """
+    is_active: Optional[bool] = Field(None)
+    is_staff: Optional[bool] = Field(None)
+    is_superuser: Optional[bool] = Field(None)
+    comments: Optional[str] = Field(None)
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "last_name": "Фамилия",
+                "first_name": "Имя",
+                "surname": "Отчество (при наличии)",
+                "is_active": "Признак активности",
+                "is_staff": "Признак персонала",
+                "is_superuser": "Признак администратора",
+                "comments": "Комментарии",
+            }
+        }
+
+
 UserPydantic = pydantic_model_creator(
     User,
     name='User',
 )
+
+
+class UserActiveSchema(BaseModel):
+    """ Схема для активации пользователя """
+    is_active: bool
+
+    class Config:
+        json_schema_extra = {
+            "example": {
+                "is_active": "Статус активности",
+            }
+        }
