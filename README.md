@@ -26,7 +26,7 @@ CELERY_RESULT_BACKEND=redis://localhost:6379/0
 <hr>
 <h3>Создание миграций</h3>
 </br>
-<h4><b>Для корректной работе в связке с DangoAdmin, при первом запуске, применять миграции следует в Django!!!</b></h4>
+<h4><b>Для корректной работе в связке с DangoAdmin, создавать и применять миграции следует в Django!!!</b></h4>
 </br>
 https://tortoise.github.io/migration.html#usage
 <h4>1. Если миграции ранее не созданы</h4>
