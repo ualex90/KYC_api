@@ -155,7 +155,7 @@ async def get_file_list(
             "id": file.id,
             "name": file.name,
             "status": file.status,
-            "owner": file_owner.email,
+            "owner": file_owner.email if file_owner else None,
             "is_public": file.is_public,
         })
     return file_list
